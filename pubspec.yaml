@@ -40,7 +40,10 @@ dependencies:
   # Internationalisation
   intl: any
 
-  # ==== AJOUTÉS depuis ton autre template ====
+  wechat_assets_picker: ^10.1.0
+
+
+  # ==== AJOUTÉS  ====
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   qr_flutter: ^4.1.0

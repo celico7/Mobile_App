@@ -35,6 +35,17 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  mobile_scanner: ^3.2.0
+  image_picker: ^1.1.1
+
+  qr_code_dart_decoder: ^0.1.2
+
+  connectivity_plus: ^6.0.5  # Détecte offline/online
+  # + les précédentes (image_picker, qr_flutter, hive_flutter, in_app_purchase)
+
+  permission_handler: ^11.3.0
+
+
   intl: any
 dev_dependencies:
   flutter_test:

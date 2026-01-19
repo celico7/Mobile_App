@@ -1,43 +1,60 @@
 import 'package:flutter/material.dart';
 
-// 1. LE MODÈLE (Rien à changer, c'est parfait)
+// ---------------------------------------------------------
+// 1. LE MODÈLE DE DONNÉES (Immuable)
+// ---------------------------------------------------------
 @immutable
 class ProgramItem {
   final String id;
   final String title;
   final String category;
+  final String? subCategory; // Nouveau : Pour le type de Jury
   final String imageUrl;
   final String description;
   final bool isFavorite;
+  final String director;
+  final String countryEmoji;
 
   const ProgramItem({
     required this.id,
     required this.title,
     required this.category,
+    this.subCategory,
     required this.imageUrl,
     required this.description,
     this.isFavorite = false,
+    required this.director,
+    required this.countryEmoji,
   });
 
   ProgramItem copyWith({
     String? id,
     String? title,
     String? category,
+    String? subCategory,
     String? imageUrl,
     String? description,
     bool? isFavorite,
+    String? director,
+    String? countryEmoji,
   }) {
     return ProgramItem(
       id: id ?? this.id,
       title: title ?? this.title,
       category: category ?? this.category,
+      subCategory: subCategory ?? this.subCategory,
       imageUrl: imageUrl ?? this.imageUrl,
       description: description ?? this.description,
       isFavorite: isFavorite ?? this.isFavorite,
+      director: director ?? this.director,
+      countryEmoji: countryEmoji ?? this.countryEmoji,
     );
   }
 }
 
+// ---------------------------------------------------------
+// 2. LA PAGE PRINCIPALE
+// ---------------------------------------------------------
 class ProgramPage extends StatefulWidget {
   const ProgramPage({super.key});
 
@@ -46,58 +63,91 @@ class ProgramPage extends StatefulWidget {
 }
 
 class _ProgramPageState extends State<ProgramPage> {
-  // 2. LES DONNÉES
-  // Note: J'ai retiré le 'const' devant la liste [...] pour qu'elle soit modifiable,
-  // même si les items à l'intérieur sont const au départ.
+  // --- A. LES DONNÉES (Base de données simulée) ---
   final List<ProgramItem> _allItems = [
+    // FILMS
     const ProgramItem(
-        id: '1',
-        title: "The Substance",
-        category: "Longs métrages",
-        // Vérifie bien que ce chemin est exact (majuscules/minuscules)
+        id: '1', title: "Good Boy", category: "Palmarès",
         imageUrl: "assets/images/program/FANTASTIQUE-GOOD-BOY.png",
-        description: "Un film choc sur la beauté éternelle..."),
+        description: "Indy, le fidèle retriever de Todd, accompagne ce dernier dans une maison isolée...",
+        director: "Ben Leonberg", countryEmoji: "🇺🇸"),
     const ProgramItem(
-        id: '2',
-        title: "Mad Max: Fury Road",
-        category: "Rétrospectives",
-        imageUrl: "assets/images/movie2.jpg",
-        description: "Le chef d'oeuvre de George Miller en noir et blanc."),
+        id: '5', title: "Bugonia", category: "Longs métrages",
+        imageUrl: "assets/images/program/bugonia.png",
+        description: "Deux jeunes hommes obsédés par les théories du complot kidnappent la PDG...",
+        director: "Yorgos Lanthimos", countryEmoji: "🇬🇧"),
     const ProgramItem(
-        id: '3',
-        title: "Compétition Courts 1",
-        category: "Courts métrages",
-        imageUrl: "assets/images/shorts.jpg",
-        description: "Sélection des meilleurs courts européens."),
+        id: '6', title: "LESS THAN 5GR OF SAFFRON", category: "Connexions",
+        imageUrl: "assets/images/program/LT5OS.png",
+        description: "Golnaz, une jeune Iranienne de 23 ans qui a immigré en Allemagne...",
+        director: "Négar Motevalymeidanshah", countryEmoji: "🇮🇷"), // J'ai mis le drapeau Iranien/Allemand supposé
     const ProgramItem(
-        id: '4',
-        title: "Rencontre avec Carpenter",
-        category: "Invités",
-        imageUrl: "assets/images/guest.jpg",
-        description: "Masterclass exceptionnelle."),
+        id: '2', title: "Mad Max: Fury Road", category: "Rétrospectives",
+        imageUrl: "assets/images/program/movie2.jpg", // Vérifie tes chemins d'images !
+        description: "Hanté par un lourd passé, Mad Max estime que le meilleur moyen de survivre est de rester seul.",
+        director: "George Miller", countryEmoji: "🇦🇺"),
+
+    // JURYS (Avec sous-catégories)
+    // 1. Films fantastiques
+    const ProgramItem(
+        id: '10', title: "Alexandre Aja", category: "Invités", subCategory: "Films fantastiques",
+        imageUrl: "assets/images/program/alexAja.png",
+        description: "Fils du réalisateur Alexandre Arcady... Réalisateur de Haute Tension et Crawl.",
+        director: "Président du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '11', title: "Judith Berlanda-Beauvallet", category: "Jurys", subCategory: "Films fantastiques",
+        imageUrl: "assets/images/program/JudithB-B.png",
+        description: "Créatrice de la chaîne Demoiselles d’Horreur...",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+
+    // 2. Méliès d’argent
+    const ProgramItem(
+        id: '12', title: "Stéphan Castang", category: "Jurys", subCategory: "Méliès d’argent",
+        imageUrl: "assets/images/program/stephan.png", // Image placeholder si besoin
+        description: "Réalisateur de Vincent doit mourir.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+
+    // 3. Crossovers
+    const ProgramItem(
+        id: '13', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
+        imageUrl: "assets/images/program/moissakis.png",
+        description: "Journaliste et co-fondateur de Capture Mag.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+
+    // 4. Films animés
+    const ProgramItem(
+        id: '14', title: "Marc Jousset", category: "Jurys", subCategory: "Films animés",
+        imageUrl: "assets/images/program/jousset.png",
+        description: "Producteur et réalisateur d'animation.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
   ];
 
+  // Listes des filtres
   final List<String> _categories = const [
-    "Tout",
-    "Favoris", // Ce bouton va maintenant marcher
-    "Palmarès",
-    "Longs métrages",
-    "Rétrospectives",
-    "Courts métrages",
-    "Connexions",
-    "Événements",
-    "Invités",
-    "Jurys",
-    "Catalogue"
+    "Tout", "Favoris", "Palmarès", "Longs métrages", "Rétrospectives",
+    "Courts métrages", "Connexions", "Événements", "Invités", "Jurys", "Catalogue"
   ];
 
-  String _selectedCategory = "Tout";
+  final List<String> _jurySubCategories = const [
+    "Tous les jurys",
+    "Films fantastiques",
+    "Méliès d’argent",
+    "Crossovers",
+    "Films animés",
+    "Courts métrages"
+  ];
 
+  // --- B. ÉTAT (State) ---
+  final Set<String> _selectedCategories = {"Tout"}; // Multi-sélection
+  String _selectedJurySubFilter = "Tous les jurys"; // Filtre secondaire unique
+
+  // --- C. LOGIQUE ---
+
+  // Gère les favoris
   void _toggleFavoriteStatus(String itemId) {
     setState(() {
       final index = _allItems.indexWhere((item) => item.id == itemId);
       if (index != -1) {
-        // On remplace l'item par sa copie modifiée
         _allItems[index] = _allItems[index].copyWith(
             isFavorite: !_allItems[index].isFavorite
         );
@@ -105,21 +155,58 @@ class _ProgramPageState extends State<ProgramPage> {
     });
   }
 
+  // Gère la sélection des filtres principaux (Multi-select)
+  void _onCategorySelected(String cat, bool selected) {
+    setState(() {
+      if (cat == "Tout") {
+        _selectedCategories.clear();
+        _selectedCategories.add("Tout");
+      } else {
+        _selectedCategories.remove("Tout");
+        if (selected) {
+          _selectedCategories.add(cat);
+        } else {
+          _selectedCategories.remove(cat);
+        }
+      }
+      if (_selectedCategories.isEmpty) {
+        _selectedCategories.add("Tout");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 3. FILTRAGE
-    List<ProgramItem> filteredList;
-    if (_selectedCategory == "Tout") {
-      filteredList = _allItems;
-    } else if (_selectedCategory == "Favoris") {
-      filteredList = _allItems.where((item) => item.isFavorite).toList();
-    } else {
-      filteredList = _allItems.where((item) => item.category == _selectedCategory).toList();
+    // FILTRAGE
+    List<ProgramItem> filteredList = _allItems.where((item) {
+      // 1. Si "Tout" est coché, on prend tout
+      if (_selectedCategories.contains("Tout")) return true;
+
+      // 2. Si "Favoris" est coché et que l'item est favori, on garde
+      if (_selectedCategories.contains("Favoris") && item.isFavorite) return true;
+
+      // 3. Si la catégorie de l'item est dans la liste des catégories cochées
+      if (_selectedCategories.contains(item.category)) return true;
+
+      return false;
+    }).toList();
+
+    // FILTRAGE SECONDAIRE (JURYS)
+    // On affine la liste si on est en mode Jurys avec un sous-filtre actif
+    if (_selectedCategories.contains("Jurys") && _selectedJurySubFilter != "Tous les jurys") {
+      filteredList = filteredList.where((item) {
+        // On ne touche qu'aux items de type Jurys
+        if (item.category == "Jurys") {
+          return item.subCategory == _selectedJurySubFilter;
+        }
+        // Les autres catégories (ex: Longs métrages sélectionnés en même temps) restent affichées
+        return true;
+      }).toList();
     }
 
     return Column(
       children: [
-        // --- ZONE FILTRES ---
+        // --- ZONE 1 : FILTRES PRINCIPAUX ---
         Container(
           height: 60,
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -130,27 +217,19 @@ class _ProgramPageState extends State<ProgramPage> {
             separatorBuilder: (ctx, i) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final cat = _categories[index];
-              final isSelected = cat == _selectedCategory;
-              return ChoiceChip(
+              final isSelected = _selectedCategories.contains(cat);
+
+              return FilterChip(
                 label: Text(cat),
                 selected: isSelected,
-                onSelected: (bool selected) {
-                  // On empêche de désélectionner un filtre (pour éviter d'avoir 0 filtre actif)
-                  if (selected) {
-                    setState(() {
-                      _selectedCategory = cat;
-                    });
-                  }
-                },
-                // Ta couleur Violette demandée
+                onSelected: (bool selected) => _onCategorySelected(cat, selected),
                 selectedColor: const Color(0xFFD78FEE),
                 backgroundColor: Colors.grey[200],
-                // On met le texte en blanc si sélectionné, sinon noir
+                checkmarkColor: Colors.white,
                 labelStyle: TextStyle(
                   color: isSelected ? Colors.white : Colors.black87,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
-                // On enlève la bordure grise moche par défaut
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               );
@@ -158,10 +237,53 @@ class _ProgramPageState extends State<ProgramPage> {
           ),
         ),
 
-        // --- ZONE GRILLE ---
+        // --- ZONE 2 : SOUS-FILTRES JURYS (Conditionnel) ---
+        if (_selectedCategories.contains("Jurys"))
+          Container(
+            height: 50,
+            width: double.infinity,
+            color: const Color(0xFFF5F5F5),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemCount: _jurySubCategories.length,
+              separatorBuilder: (ctx, i) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final subCat = _jurySubCategories[index];
+                final isSelected = subCat == _selectedJurySubFilter;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedJurySubFilter = subCat;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.black : Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Text(
+                      subCat,
+                      style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+        // --- ZONE 3 : GRILLE DES RÉSULTATS ---
         Expanded(
           child: filteredList.isEmpty
-              ? Center(child: Text("Aucun élément trouvé")) // Petit message si liste vide
+              ? const Center(child: Text("Aucun élément trouvé"))
               : GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -185,23 +307,21 @@ class _ProgramPageState extends State<ProgramPage> {
   }
 }
 
+// ---------------------------------------------------------
+// 3. LES WIDGETS (Carte et Détail)
+// ---------------------------------------------------------
+
 class _ProgramCard extends StatelessWidget {
   final ProgramItem item;
   final VoidCallback onFavoriteChanged;
 
-  const _ProgramCard({
-    required this.item,
-    required this.onFavoriteChanged,
-  });
+  const _ProgramCard({required this.item, required this.onFavoriteChanged});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => _DetailPage(item: item)),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => _DetailPage(item: item)));
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -219,59 +339,41 @@ class _ProgramCard extends StatelessWidget {
                     item.imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (c, o, s) => Container(
-                      color: Colors.grey[800],
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.broken_image, color: Colors.white54),
-                          const SizedBox(height: 4),
-                          // Affiche un texte d'erreur pour t'aider à débugger
-                          const Text("Image introuvable", style: TextStyle(color: Colors.white, fontSize: 10)),
-                        ],
-                      ),
+                        color: Colors.grey[800],
+                        child: const Center(child: Icon(Icons.broken_image, color: Colors.white54))
                     ),
                   ),
                   Positioned(
-                    top: 8,
-                    left: 8,
+                    top: 8, left: 8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                      decoration: BoxDecoration(color: Colors.black.withOpacity(0.7), borderRadius: BorderRadius.circular(4)),
                       child: Text(
-                        item.category.toUpperCase(),
-                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                        // Affiche le sous-type si c'est un Jury, sinon la catégorie
+                        (item.category == "Jurys" && item.subCategory != null)
+                            ? item.subCategory!.toUpperCase()
+                            : item.category.toUpperCase(),
+                        style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            // INFO & COEUR
+            // INFOS
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      item.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13, // Légèrement plus petit pour éviter les débordements
-                      ),
-                    ),
+                      child: Text(item.title, maxLines: 2, overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
                   ),
                   IconButton(
-                    icon: Icon(
-                      item.isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: item.isFavorite ? Colors.red : Colors.grey,
-                    ),
+                    icon: Icon(item.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: item.isFavorite ? Colors.red : Colors.grey, size: 20),
                     onPressed: onFavoriteChanged,
+                    padding: EdgeInsets.zero, constraints: const BoxConstraints(),
                   ),
                 ],
               ),
@@ -283,7 +385,6 @@ class _ProgramCard extends StatelessWidget {
   }
 }
 
-// Ta classe _DetailPage reste inchangée
 class _DetailPage extends StatelessWidget {
   final ProgramItem item;
   const _DetailPage({required this.item});
@@ -291,8 +392,61 @@ class _DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(item.title)),
-      body: Center(child: Text("Détails de ${item.title}")), // Placeholder rapide
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(item.title, style: const TextStyle(color: Colors.black, fontSize: 18)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(item.imageUrl, height: 300, width: double.infinity, fit: BoxFit.cover,
+                errorBuilder: (c,o,s)=>Container(height:300, color:Colors.grey[300])),
+
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Badges de catégorie
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Chip(label: Text(item.category), backgroundColor: const Color(0xFFD78FEE).withOpacity(0.2)),
+                      if(item.subCategory != null)
+                        Chip(label: Text(item.subCategory!), backgroundColor: Colors.black.withOpacity(0.1)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Titre
+                  Text(item.title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+
+                  // Infos Réalisateur / Pays
+                  Row(children: [
+                    const Icon(Icons.person, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Flexible(child: Text(item.director, style: const TextStyle(fontSize: 16))),
+
+                    Container(height: 15, width: 1, color: Colors.grey, margin: const EdgeInsets.symmetric(horizontal: 15)),
+
+                    Text(item.countryEmoji, style: const TextStyle(fontSize: 24)),
+                  ]),
+
+                  const SizedBox(height: 24),
+                  const Text("Synopsis", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text(item.description, style: const TextStyle(fontSize: 16, height: 1.5)),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -18,7 +18,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    carousel_slider_plus: ^1.0.2
+
+  carousel_slider_plus: ^7.1.1
 
   # Icons iOS style
   cupertino_icons: ^1.0.8

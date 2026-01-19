@@ -3,22 +3,23 @@
 <plist version="1.0">
 <dict>
 
-	<!-- Région et nom -->
+	<!-- Région et nom de l’application -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Feffs</string>
 
 	<!-- 📷 Permissions iOS requises -->
-	<!-- Caméra pour scanner QR et prendre photos -->
+
+	<!-- Caméra pour scanner des QR et prendre des photos -->
 	<key>NSCameraUsageDescription</key>
 	<string>Caméra pour photo pass festival et scanner QR.</string>
 
-	<!-- Accès à la bibliothèque photos pour lire une image -->
+	<!-- Accès à la galerie pour sélectionner des photos/vidéos -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photos pour lire ou sélectionner une image depuis la galerie.</string>
+	<string>Accès à la galerie pour sélectionner des photos ou vidéos.</string>
 
-	<!-- Permission d'ajout dans la bibliothèque photos (écriture) -->
+	<!-- Autorisation d'enregistrer des images dans la galerie -->
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Sauvegarde de photo pass dans la galerie.</string>
 
@@ -33,13 +34,13 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 
-	<!-- 🕒 Autres modes d'arrière-plan (ex. fetch) -->
+	<!-- 🕒 Modes d'arrière-plan (par exemple fetch pour les updates) -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 	</array>
 
-	<!-- ⚙️ Autres éléments standards -->
+	<!-- ⚙️ Autres éléments standards requis par iOS -->
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -60,12 +61,14 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -73,6 +76,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

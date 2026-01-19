@@ -6,6 +6,14 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Feffs</string>
+
+    <!-- 👇 Permissions iOS requises pour scanner et galerie -->
+    <key>NSCameraUsageDescription</key>
+    <string>Nous avons besoin d'accéder à la caméra pour scanner des QR codes.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Nous avons besoin d'accéder à la galerie pour choisir une photo contenant un QR code.</string>
+
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

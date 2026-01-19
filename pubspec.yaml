@@ -41,6 +41,8 @@ dependencies:
   connectivity_plus: ^6.0.5  # Détecte offline/online
   # + les précédentes (image_picker, qr_flutter, hive_flutter, in_app_purchase)
 
+  permission_handler: ^11.3.0
+
 
   intl: any
 dev_dependencies:

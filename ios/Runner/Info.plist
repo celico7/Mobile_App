@@ -2,18 +2,44 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+	<!-- Région et nom -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Feffs</string>
 
-    <!-- 👇 Permissions iOS requises pour scanner et galerie -->
-    <key>NSCameraUsageDescription</key>
-    <string>Nous avons besoin d'accéder à la caméra pour scanner des QR codes.</string>
+	<!-- 📷 Permissions iOS requises -->
+	<!-- Caméra pour scanner QR et prendre photos -->
+	<key>NSCameraUsageDescription</key>
+	<string>Caméra pour photo pass festival et scanner QR.</string>
 
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Nous avons besoin d'accéder à la galerie pour choisir une photo contenant un QR code.</string>
+	<!-- Accès à la bibliothèque photos pour lire une image -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photos pour lire ou sélectionner une image depuis la galerie.</string>
 
+	<!-- Permission d'ajout dans la bibliothèque photos (écriture) -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Sauvegarde de photo pass dans la galerie.</string>
+
+	<!-- 📶 Autoriser les chargements réseau si nécessaire -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<!-- 🔐 Indique si l'app utilise ou non une encryption non exemptée -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+
+	<!-- 🕒 Autres modes d'arrière-plan (ex. fetch) -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
+
+	<!-- ⚙️ Autres éléments standards -->
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,8 +52,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -53,5 +77,6 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
 </dict>
 </plist>

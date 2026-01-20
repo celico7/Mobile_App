@@ -36,7 +36,7 @@ class _QuotidiennePageState extends State<QuotidiennePage> {
       category: "Ateliers",
       time: "10:00 – 12:00",
       location: "Village Fantastique",
-      imageUrl: "assets/images/daily/makeup.jpg",
+      imageUrl: "assets/images/daily/maquillage.jpg",
       description:
       "Découverte des techniques de maquillage FX utilisées dans le cinéma fantastique.",
     ),
@@ -95,12 +95,11 @@ class _QuotidiennePageState extends State<QuotidiennePage> {
   final List<String> _categories = const [
     "Tout",
     "Ateliers",
+    "Enfants",
     "Rencontres",
     "Animations",
     "Conférences",
-    "Enfants",
   ];
-
 
   String _selectedCategory = "Tout";
 

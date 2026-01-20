@@ -72,17 +72,17 @@ class _ProgramPageState extends State<ProgramPage> {
         description: "Indy, le fidèle retriever de Todd, accompagne ce dernier dans une maison isolée...",
         director: "Ben Leonberg", countryEmoji: "🇺🇸"),
     const ProgramItem(
-        id: '5', title: "Bugonia", category: "Longs métrages",
+        id: '2', title: "Bugonia", category: "Longs métrages",
         imageUrl: "assets/images/program/bugonia.png",
         description: "Deux jeunes hommes obsédés par les théories du complot kidnappent la PDG...",
         director: "Yorgos Lanthimos", countryEmoji: "🇬🇧"),
     const ProgramItem(
-        id: '6', title: "LESS THAN 5GR OF SAFFRON", category: "Connexions",
+        id: '3', title: "LESS THAN 5GR OF SAFFRON", category: "Connexions",
         imageUrl: "assets/images/program/LT5OS.png",
         description: "Golnaz, une jeune Iranienne de 23 ans qui a immigré en Allemagne...",
         director: "Négar Motevalymeidanshah", countryEmoji: "🇮🇷"), // J'ai mis le drapeau Iranien/Allemand supposé
     const ProgramItem(
-        id: '2', title: "Mad Max: Fury Road", category: "Rétrospectives",
+        id: '4', title: "Mad Max: Fury Road", category: "Rétrospectives",
         imageUrl: "assets/images/program/movie2.jpg", // Vérifie tes chemins d'images !
         description: "Hanté par un lourd passé, Mad Max estime que le meilleur moyen de survivre est de rester seul.",
         director: "George Miller", countryEmoji: "🇦🇺"),
@@ -90,35 +90,68 @@ class _ProgramPageState extends State<ProgramPage> {
     // JURYS (Avec sous-catégories)
     // 1. Films fantastiques
     const ProgramItem(
-        id: '10', title: "Alexandre Aja", category: "Invités", subCategory: "Films fantastiques",
-        imageUrl: "assets/images/program/alexAja.png",
+        id: '5', title: "Alexandre Aja", category: "Invités", subCategory: "Films fantastiques",
+        imageUrl: "assets/images/program/jurys/alexAja.png",
         description: "Fils du réalisateur Alexandre Arcady... Réalisateur de Haute Tension et Crawl.",
         director: "Président du Jury", countryEmoji: "🇫🇷"),
     const ProgramItem(
-        id: '11', title: "Judith Berlanda-Beauvallet", category: "Jurys", subCategory: "Films fantastiques",
-        imageUrl: "assets/images/program/JudithB-B.png",
+        id: '5', title: "Judith Berlanda-Beauvallet", category: "Jurys", subCategory: "Films fantastiques",
+        imageUrl: "assets/images/program/jurys/JudithB-B.png",
         description: "Créatrice de la chaîne Demoiselles d’Horreur...",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '6', title: "Jean-Yves Roubin", category: "Jurys", subCategory: "Films fantastiques",
+        imageUrl: "assets/images/program/jurys/JYR.png",
+        description: "Jean-Yves Roubin a fondé Frakas Productions en 2007 et œuvre au développement de films belges et de coproductions internationales. Il est également président du conseil d’administration de l’Union des producteurs francophones des films et séries. Il a coproduit des succès comme Titane et Grave de Julia Ducournau, Onoda d’Arthur Harari et bien d’autres. Il a récemment produit les derniers films de Fabrice du Welz, Inexorable et Maldoror.",
         director: "Membre du Jury", countryEmoji: "🇫🇷"),
 
     // 2. Méliès d’argent
     const ProgramItem(
-        id: '12', title: "Stéphan Castang", category: "Jurys", subCategory: "Méliès d’argent",
-        imageUrl: "assets/images/program/stephan.png", // Image placeholder si besoin
-        description: "Réalisateur de Vincent doit mourir.",
+        id: '7', title: "Stéphan Castang", category: "Jurys", subCategory: "Méliès d’argent",
+        imageUrl: "assets/images/program/jurys/Stephan-Castang.png", // Image placeholder si besoin
+        description: "En tant que cinéaste, Stéphan Castang réalise plusieurs courts métrages dont : Jeunesses françaises (2011) et Finale (2020). En 2023, son long métrage Vincent doit mourir est sélectionné à la Semaine de la critique à Cannes. Présenté dans de nombreux festivals internationaux, il obtient plusieurs distinctions (dont l’Octopus d’or au FEFFS). Nommé aux European Film Awards et aux Césars pour le meilleur premier film, il remporte le Magritte du meilleur film étranger en 2024.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '8', title: "Marine Bohin", category: "Jurys", subCategory: "Méliès d’argent",
+        imageUrl: "assets/images/program/jurys/bohin.png", // Image placeholder si besoin
+        description: "Journaliste cinéma depuis dix ans et plume régulière du magazine Sofilm, Marine Bohin a également coécrit le livre Le Cinéma de genre au féminin, se spécialisant dans les problématiques liées à la place des femmes dans le 7e art. Elle poursuit en parallèle une carrière de comédienne : le film Belle Enfant, de Jim, est sorti en salle à l’été 2024, et elle y tient le rôle principal aux côtés de Baptiste Lecaplain et Marisa Berenson.",
         director: "Membre du Jury", countryEmoji: "🇫🇷"),
 
     // 3. Crossovers
     const ProgramItem(
-        id: '13', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
-        imageUrl: "assets/images/program/moissakis.png",
-        description: "Journaliste et co-fondateur de Capture Mag.",
+        id: '9', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
+        imageUrl: "assets/images/program/jurys/moissakis.png",
+        description: "Journaliste culturel depuis vingt-cinq ans, Stéphane Moïssakis a fait ses armes chez Mad Movies, collaboré à l’écriture d’un long métrage (La Horde), rejoint le service éditorial de l’éditeur de jeux vidéo Ubisoft, participé à plus d’une centaine de podcasts NoCiné, prêté sa plume à Rockyrama et fondé le média Capture Mag en 2012. Pas mal pour un humain, non ?",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '10', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
+        imageUrl: "assets/images/program/jurys/girard.png",
+        description: "Après avoir été programmatrice, en charge notamment de programmations 70 mm et de cinéma bis, puis d’action culturelle, accueillant de nombreux invités et coordonnant ciné spectacles, masterclass, conférences, Élise Girard est désormais responsable de valorisation des collections de films à la Cinémathèque française et collabore au projet de plateforme VOD HENRI. Elle fait partie des auteurs d’un ouvrage collectif sur le cinéma australien, Down Under Moviez.",
         director: "Membre du Jury", countryEmoji: "🇫🇷"),
 
     // 4. Films animés
     const ProgramItem(
-        id: '14', title: "Marc Jousset", category: "Jurys", subCategory: "Films animés",
-        imageUrl: "assets/images/program/jousset.png",
-        description: "Producteur et réalisateur d'animation.",
+        id: '11', title: "Marc Jousset", category: "Jurys", subCategory: "Films animés",
+        imageUrl: "assets/images/program/jurys/jousset.png",
+        description: "Marc Jousset fonde le studio Je Suis Bien Content avec Franck Ekinci en 1996. Il produit 30 courts métrages et plusieurs séries. Dès 2005, il se consacre au long métrage : producteur exécutif de Persepolis (Prix du jury à Cannes, deux Césars, nommé aux Oscars), Le Jour des Corneilles, Mars Express, et producteur délégué d’Avril et le monde truqué (Cristal à Annecy 2015), Les Secrets de mon père et Angelo dans la forêt mystérieuse.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '12', title: "Perrine Quennesson", category: "Jurys", subCategory: "Films animés",
+        imageUrl: "assets/images/program/jurys/quennesson.png",
+        description: "Journaliste indépendante, Perrine Quennesson écrit pour différents magazines tels CinémaTeaser, Le Film français ou encore Trois Couleurs. Elle officie aussi sur Canal+ dans l’émission Le Cercle Séries et collabore également avec plusieurs festivals en tant que modératrice. Elle est de plus la créatrice et l’animatrice du podcast 7e Science, qui permet la rencontre de la science et du cinéma, et du Ciné-club Epsiloon. Enfin, elle enseigne à l’École supérieure d’études cinématographiques (ESEC) à Paris.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+
+    // 4. Courts métrage
+    const ProgramItem(
+        id: '13', title: "Kinane Moualla", category: "Jurys", subCategory: "Courts métrages",
+        imageUrl: "assets/images/program/jurys/moualla.png",
+        description: "Ingénieur du son diplômé de l’ISTS en 2010, Kinane Moualla travaille depuis pour le cinéma et la télévision. Spécialisé dans le son à l’image, il intervient aussi bien en tant que chef opérateur du son que monteur son, sound designer ou mixeur. Il a pu travailler pour de nombreuses sociétés de production françaises et internationales sur des projets très variés, du documentaire aux longs métrages de fiction en passant par l’animation et la série télévisée.",
+        director: "Membre du Jury", countryEmoji: "🇫🇷"),
+    const ProgramItem(
+        id: '14', title: "Léa Laubacher",
+        category: "Jurys", subCategory: "Courts métrages",
+        imageUrl: "assets/images/program/jurys/laubacher.png",
+        description: "Après avoir commercialisé à l’international des œuvres françaises de cinéma et d’audiovisuel (fiction, animation et documentaire) pour des filiales du groupe TF1 et du groupe Lagardère (qui a rejoint Mediawan), Léa Laubacher est depuis 2012 responsable des aides à la production audiovisuelle et cinématographique et du suivi des associations au sein de la direction de la culture de la Ville et de l’Eurométropole de Strasbourg.",
         director: "Membre du Jury", countryEmoji: "🇫🇷"),
   ];
 

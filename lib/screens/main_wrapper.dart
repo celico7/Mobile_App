@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'program_page.dart';
 import 'pass_page.dart';
-// N'oublie pas de créer ces fichiers ou de vérifier les noms
 import 'quotidienne_page.dart';
 import 'notif_page.dart';
 import 'qrcode_page.dart';
+
+const Color tertiaryColor = Color(0xFFD78FEE);
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -17,50 +18,50 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   int _selectedIndex = 0;
 
-  // IMPORTANTE : La liste doit avoir exactement le même nombre
-  // d'éléments que ton menu (6 destinations = 6 pages)
   final List<Widget> _pages = [
     const HomePage(),
     const ProgramPage(),
     const PassPage(),
-    const QuotidiennePage(), // Index 3
-    const NotifPage(),       // Index 4
-    const QrCodePage(),      // Index 5
-  ];
-
-  final List<String> _titles = [
-    "FEFFS",
-    "Programme",
-    "Achat Pass",
-    "Quotidienne",
-    "Notifications",
-    "Mon QR Code"
+    const QuotidiennePage(),
+    const NotifPage(),
+    const QrCodePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: tertiaryColor),
+        title: Image.asset(
+          'assets/images/logo_festival.png',
+          height: 35,
+          fit: BoxFit.contain,
+          errorBuilder: (c, o, s) => const Icon(Icons.movie, color: tertiaryColor),
+        ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Image.asset(
-              'assets/images/logo_festival.png',
-              height: 32,
-              errorBuilder: (c, o, s) => const Icon(Icons.music_note),
-            ),
+          IconButton(
+            icon: const Icon(Icons.account_circle_outlined, color: tertiaryColor),
+            tooltip: "Connexion",
+            onPressed: () => print("Redirection vers AuthPage"),
           ),
+          const SizedBox(width: 8),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
+        ),
       ),
 
       drawer: NavigationDrawer(
+        backgroundColor: Colors.white,
         selectedIndex: _selectedIndex,
-        indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+        indicatorColor: tertiaryColor.withOpacity(0.2),
         onDestinationSelected: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          setState(() => _selectedIndex = index);
           Navigator.pop(context);
         },
         children: [
@@ -69,63 +70,40 @@ class _MainWrapperState extends State<MainWrapper> {
             child: Row(
               children: [
                 SizedBox(
-                  height: 100,
-                  width: 100,
+                  height: 140,
+                  width: 140,
                   child: Image.asset(
                     'assets/images/logo_festival.png',
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.music_note, size: 50),
+                    const Icon(Icons.movie_creation_outlined, size: 40, color: tertiaryColor),
                   ),
                 ),
+                const SizedBox(width: 15),
               ],
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+            child: Divider(color: Colors.black12),
+          ),
 
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: Text("Accueil"),
-          ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month),
-            label: Text("Programme"),
-          ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.confirmation_number_outlined),
-            selectedIcon: Icon(Icons.confirmation_number),
-            label: Text("Achat Pass"),
-          ),
+          _buildDrawerOption(Icons.home_outlined, Icons.home, "Accueil", 0),
+          _buildDrawerOption(Icons.calendar_month_outlined, Icons.calendar_month, "Programme", 1),
+          _buildDrawerOption(Icons.confirmation_number_outlined, Icons.confirmation_number, "Achat Pass", 2),
 
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
-            child: Divider(),
+            child: Divider(color: Colors.black12),
           ),
 
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.today_outlined),
-            selectedIcon: Icon(Icons.today),
-            label: Text("Quotidienne"),
-          ),
+          _buildDrawerOption(Icons.today_outlined, Icons.today, "Quotidienne", 3),
+          _buildDrawerOption(Icons.notifications_outlined, Icons.notifications, "Notifications", 4, badge: '3'),
+          _buildDrawerOption(Icons.qr_code_scanner_outlined, Icons.qr_code_2, "QR Code", 5),
 
-          NavigationDrawerDestination(
-            icon: Badge(
-              label: const Text('3'),
-              child: const Icon(Icons.notifications_outlined),
-            ),
-            selectedIcon: const Icon(Icons.notifications),
-            label: const Text("Notifications"),
-          ),
-
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.qr_code_scanner_outlined),
-            selectedIcon: Icon(Icons.qr_code_2),
-            label: Text("QR Code"),
-          ),
-
+          const Spacer(),
           const Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(32.0),
             child: Center(
               child: Text(
                 "Version 1.0.0",
@@ -136,6 +114,24 @@ class _MainWrapperState extends State<MainWrapper> {
         ],
       ),
       body: _pages[_selectedIndex],
+    );
+  }
+
+  Widget _buildDrawerOption(IconData icon, IconData selectedIcon, String label, int index, {String? badge}) {
+    final bool isSelected = _selectedIndex == index;
+
+    return NavigationDrawerDestination(
+      icon: badge != null
+          ? Badge(label: Text(badge), backgroundColor: tertiaryColor, child: Icon(icon, color: Colors.black54))
+          : Icon(icon, color: Colors.black54),
+      selectedIcon: Icon(selectedIcon, color: tertiaryColor),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? tertiaryColor : Colors.black87,
+        ),
+      ),
     );
   }
 }

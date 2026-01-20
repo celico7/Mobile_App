@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:qr_code_dart_decoder/qr_code_dart_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class QrCodePage extends StatefulWidget {
   const QrCodePage({super.key});
@@ -16,6 +17,25 @@ class _QrCodePageState extends State<QrCodePage> {
   String? _qrCode;
   bool _isScanning = false;
   final MobileScannerController _controller = MobileScannerController();
+
+  /// Ouvre le lien du QR code
+  Future<void> _openLink(String url) async {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://$url';
+    }
+    final uri = Uri.tryParse(url);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      // Une fois ouvert, on affiche le message "page ouverte"
+      setState(() {
+        _qrCode = "Page ouverte dans le navigateur. Vous pouvez scanner un autre QR.";
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Lien invalide")),
+      );
+    }
+  }
 
   /// Ouvre la vraie galerie photo
   Future<void> _openWeChatGallery() async {
@@ -35,22 +55,20 @@ class _QrCodePageState extends State<QrCodePage> {
         final decoder = QrCodeDartDecoder();
         final result = await decoder.decodeFile(bytes);
 
-        setState(() {
-          if (result != null && result.text.isNotEmpty) {
+        if (result != null && result.text.isNotEmpty) {
+          setState(() {
             _qrCode = result.text;
-            _isScanning = false;
-            _controller.stop();
-          } else {
-            _qrCode = "Aucun QR trouvé dans l'image sélectionnée";
-            _isScanning = false;
-            _controller.stop();
-          }
-        });
+          });
+          _openLink(result.text);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Aucun QR trouvé dans l'image")),
+          );
+        }
       }
     }
   }
 
-  /// Montre une boîte de dialogue personnalisée pour demander la permission caméra
   Future<bool> _askForCameraPermissionDialog() async {
     return await showDialog<bool>(
       context: context,
@@ -73,25 +91,19 @@ class _QrCodePageState extends State<QrCodePage> {
         false;
   }
 
-  /// Vérifie la permission, demande si nécessaire, puis active la caméra
   Future<void> _requestAndStartCameraScan() async {
-    // Popup perso avant popup système
     final wantsPermission = await _askForCameraPermissionDialog();
-    if (!wantsPermission) {
-      return; // l'utilisateur n'a pas voulu
-    }
+    if (!wantsPermission) return;
 
-    // Demande la permission au système
     final status = await Permission.camera.request();
 
     if (status.isGranted) {
       setState(() {
-        _qrCode = null;
         _isScanning = true;
+        _qrCode = null; // reset à chaque ouverture
       });
-      _controller.start(); // relance la caméra
+      _controller.start();
     } else if (status.isPermanentlyDenied) {
-      // L'utilisateur a refusé définitivement : propose d'ouvrir les réglages
       await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -114,7 +126,6 @@ class _QrCodePageState extends State<QrCodePage> {
         ),
       );
     } else {
-      // Permission refusée sans être permanente
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Permission caméra refusée")),
       );
@@ -127,8 +138,7 @@ class _QrCodePageState extends State<QrCodePage> {
       child: Card(
         margin: const EdgeInsets.all(32),
         elevation: 8,
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -136,8 +146,8 @@ class _QrCodePageState extends State<QrCodePage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
-                borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20)),
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: const Center(
                 child: Text(
@@ -157,14 +167,18 @@ class _QrCodePageState extends State<QrCodePage> {
                 child: _isScanning
                     ? MobileScanner(
                   controller: _controller,
-                  onDetect: (capture) {
+                  onDetect: (capture) async {
                     if (capture.barcodes.isNotEmpty) {
                       final barcode = capture.barcodes.first;
+                      final code = barcode.rawValue ?? "QR vide";
+
+                      // affiche le QR scanné
                       setState(() {
-                        _qrCode = barcode.rawValue ?? "QR vide";
-                        _isScanning = false;
+                        _qrCode = code;
                       });
-                      _controller.stop();
+
+                      // ouvre le lien, mais scanner reste actif
+                      await _openLink(code);
                     }
                   },
                 )
@@ -176,10 +190,9 @@ class _QrCodePageState extends State<QrCodePage> {
             ),
             if (_qrCode != null)
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  "QR Code détecté: $_qrCode",
+                  _qrCode!,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -188,7 +201,6 @@ class _QrCodePageState extends State<QrCodePage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Nouveau bouton scanner qui gère la permission
                 ElevatedButton.icon(
                   icon: const Icon(Icons.camera_alt),
                   label: const Text("Scanner un QR Code"),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "269030990123",
+    "project_id": "feffs-8fd86",
+    "storage_bucket": "feffs-8fd86.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269030990123:android:154f2ee3fac6871c22e56e",
+        "android_client_info": {
+          "package_name": "com.example.feffs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFvTLBGTFc3RTkSwcGkkULwsz8W2JIls0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

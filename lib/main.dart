@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/main_wrapper.dart';
+import 'services/login_page.dart';
+import 'firebase_options.dart';
 
-void main() {
-  initializeDateFormatting('fr_FR', null).then((_) {
-    runApp(const FestivalApp());
-  });
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await initializeDateFormatting('fr_FR', null);
+  runApp(const FestivalApp());
 }
 
 class FestivalApp extends StatelessWidget {
@@ -18,18 +27,20 @@ class FestivalApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFD78FEE), // Rouge festival par exemple
-          brightness: Brightness.light,
-        ),
-        // On s'assure que l'AppBar est propre partout
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 0,
-          scrolledUnderElevation: 0, // Évite le changement de couleur au scroll
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD78FEE)),
       ),
-      home: const MainWrapper(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          if (snapshot.hasData) {
+            return const MainWrapper();
+          }
+          return const LoginPage();
+        },
+      ),
     );
   }
 }

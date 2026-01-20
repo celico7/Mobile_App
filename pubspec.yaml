@@ -51,6 +51,8 @@ dependencies:
   path_provider: ^2.1.4
   url_launcher: ^6.3.1
   font_awesome_flutter: ^10.12.0
+  firebase_core: ^4.4.0
+  firebase_auth: ^6.1.4
 
 # -------------------------------------------------------------------
 # Dev dépendances

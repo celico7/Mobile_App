@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'home_page.dart';
 import 'program_page.dart';
 import 'pass_page.dart';
 import 'quotidienne_page.dart';
 import 'notif_page.dart';
 import 'qrcode_page.dart';
+import '../services/login_page.dart';
 
 const Color tertiaryColor = Color(0xFFD78FEE);
 
@@ -29,109 +31,106 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: tertiaryColor),
-        title: Image.asset(
-          'assets/images/logo_festival.png',
-          height: 35,
-          fit: BoxFit.contain,
-          errorBuilder: (c, o, s) => const Icon(Icons.movie, color: tertiaryColor),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle_outlined, color: tertiaryColor),
-            tooltip: "Connexion",
-            onPressed: () => print("Redirection vers AuthPage"),
-          ),
-          const SizedBox(width: 8),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
-        ),
-      ),
+    return StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          final User? user = snapshot.data;
 
-      drawer: NavigationDrawer(
-        backgroundColor: Colors.white,
-        selectedIndex: _selectedIndex,
-        indicatorColor: tertiaryColor.withOpacity(0.2),
-        onDestinationSelected: (index) {
-          setState(() => _selectedIndex = index);
-          Navigator.pop(context);
-        },
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(28, 32, 16, 20),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 140,
-                  width: 140,
-                  child: Image.asset(
-                    'assets/images/logo_festival.png',
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.movie_creation_outlined, size: 40, color: tertiaryColor),
+          return Scaffold(
+            backgroundColor: const Color(0xFFF8F9FA),
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              centerTitle: true,
+              iconTheme: const IconThemeData(color: tertiaryColor),
+              title: Image.asset(
+                'assets/images/logo_festival.png',
+                height: 35,
+                fit: BoxFit.contain,
+                errorBuilder: (c, o, s) => const Icon(Icons.movie, color: tertiaryColor),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                      user != null ? Icons.account_circle : Icons.account_circle_outlined,
+                      color: tertiaryColor
                   ),
+                  onPressed: () {
+                    if (user == null) {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginPage()));
+                    } else {
+                      _showProfileDialog(context, user);
+                    }
+                  },
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 8),
               ],
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 8),
-            child: Divider(color: Colors.black12),
-          ),
-
-          _buildDrawerOption(Icons.home_outlined, Icons.home, "Accueil", 0),
-          _buildDrawerOption(Icons.calendar_month_outlined, Icons.calendar_month, "Programme", 1),
-          _buildDrawerOption(Icons.confirmation_number_outlined, Icons.confirmation_number, "Achat Pass", 2),
-
-          const Padding(
-            padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
-            child: Divider(color: Colors.black12),
-          ),
-
-          _buildDrawerOption(Icons.today_outlined, Icons.today, "Quotidienne", 3),
-          _buildDrawerOption(Icons.notifications_outlined, Icons.notifications, "Notifications", 4, badge: '3'),
-          _buildDrawerOption(Icons.qr_code_scanner_outlined, Icons.qr_code_2, "QR Code", 5),
-
-          const Spacer(),
-          const Padding(
-            padding: EdgeInsets.all(32.0),
-            child: Center(
-              child: Text(
-                "Version 1.0.0",
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
+            drawer: NavigationDrawer(
+              backgroundColor: Colors.white,
+              selectedIndex: _selectedIndex,
+              indicatorColor: tertiaryColor.withOpacity(0.2),
+              onDestinationSelected: (index) {
+                setState(() => _selectedIndex = index);
+                Navigator.pop(context);
+              },
+              children: [
+                const SizedBox(height: 30),
+                Center(child: Image.asset('assets/images/logo_festival.png', height: 80)),
+                const Divider(indent: 20, endIndent: 20),
+                _buildDrawerOption(Icons.home_outlined, Icons.home, "Accueil", 0),
+                _buildDrawerOption(Icons.calendar_month_outlined, Icons.calendar_month, "Programme", 1),
+                _buildDrawerOption(Icons.confirmation_number_outlined, Icons.confirmation_number, "Achat Pass", 2),
+                _buildDrawerOption(Icons.today_outlined, Icons.today, "Quotidienne", 3),
+                _buildDrawerOption(Icons.notifications_outlined, Icons.notifications, "Notifications", 4, badge: '3'),
+                _buildDrawerOption(Icons.qr_code_scanner_outlined, Icons.qr_code_2, "QR Code", 5),
+                const Spacer(),
+                if (user != null)
+                  ListTile(
+                    leading: const Icon(Icons.logout, color: Colors.redAccent),
+                    title: const Text("Déconnexion", style: TextStyle(color: Colors.redAccent)),
+                    onTap: () => FirebaseAuth.instance.signOut(),
+                  ),
+                const Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Center(child: Text("Version 1.0.0", style: TextStyle(color: Colors.grey, fontSize: 10))),
+                ),
+              ],
             ),
+            body: _pages[_selectedIndex],
+          );
+        }
+    );
+  }
+
+  void _showProfileDialog(BuildContext context, User user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Mon Compte"),
+        content: Text("Connecté en tant que :\n${user.email}"),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Fermer")),
+          TextButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pop(context);
+            },
+            child: const Text("DÉCONNEXION", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
     );
   }
 
   Widget _buildDrawerOption(IconData icon, IconData selectedIcon, String label, int index, {String? badge}) {
     final bool isSelected = _selectedIndex == index;
-
     return NavigationDrawerDestination(
       icon: badge != null
-          ? Badge(label: Text(badge), backgroundColor: tertiaryColor, child: Icon(icon, color: Colors.black54))
-          : Icon(icon, color: Colors.black54),
-      selectedIcon: Icon(selectedIcon, color: tertiaryColor),
-      label: Text(
-        label,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? tertiaryColor : Colors.black87,
-        ),
-      ),
+          ? Badge(label: Text(badge), backgroundColor: tertiaryColor, child: Icon(icon))
+          : Icon(icon),
+      selectedIcon: Icon(selectedIcon),
+      label: Text(label),
     );
   }
 }

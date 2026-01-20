@@ -66,5 +66,7 @@ flutter:
     - assets/images/
     - assets/images/program/
     - assets/images/program/jurys/
+    - assets/images/daily/
+
 
   uses-material-design: true

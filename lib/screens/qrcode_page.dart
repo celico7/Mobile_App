@@ -17,7 +17,7 @@ class _QrCodePageState extends State<QrCodePage> {
   bool _isScanning = false;
   final MobileScannerController _controller = MobileScannerController();
 
-  /// Ouvre la vraie galerie photo (WeChat style)
+  /// Ouvre la vraie galerie photo
   Future<void> _openWeChatGallery() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
@@ -151,7 +151,7 @@ class _QrCodePageState extends State<QrCodePage> {
             ),
             Container(
               height: 250,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: _isScanning
@@ -174,7 +174,6 @@ class _QrCodePageState extends State<QrCodePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
             if (_qrCode != null)
               Padding(
                 padding:
@@ -185,8 +184,8 @@ class _QrCodePageState extends State<QrCodePage> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-            const SizedBox(height: 16),
-            Row(
+            const SizedBox(height: 8),
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 // Nouveau bouton scanner qui gère la permission
@@ -195,7 +194,7 @@ class _QrCodePageState extends State<QrCodePage> {
                   label: const Text("Scanner un QR Code"),
                   onPressed: _requestAndStartCameraScan,
                 ),
-
+                const SizedBox(height: 10),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.photo_library),
                   label: const Text("Galerie photo"),

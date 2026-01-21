@@ -236,9 +236,17 @@ class _AboutExpandableState extends State<_AboutExpandable> {
           if (isExpanded) ...[
             const SizedBox(height: 15),
             _buildAboutParagraph(
-                "Le Festival européen du film fantastique de Strasbourg est un rendez-vous majeur du cinéma fantastique en France..."),
+                "Le Festival européen du film fantastique de Strasbourg est un rendez-vous majeur du cinéma fantastique en France et constitue, parmi les événements européens, l’un des plus complets du genre. Il met en avant les nouvelles productions internationales du cinéma fantastique tout en faisant la part belle aux thrillers, films et comédies noirs, ainsi qu’aux jeux vidéo et au cinéma en réalité virtuelle. Il propose également de nombreuses rétrospectives de films, témoignant de son attachement profond au patrimoine cinématographique."),
             _buildAboutParagraph(
-                "En sa qualité de membre affilié à la MIFF, le festival organise la compétition du Méliès d’argent..."),
+                "En sa qualité de membre affilié à la MIFF (Méliès International Festivals Federation), le festival de Strasbourg organise en France la compétition du Méliès d’argent du meilleur film fantastique européen. Les lauréats de ce prix sont automatiquement sélectionnés pour le Méliès d’or qui est remis chaque année dans le cadre de l’un des festivals de la MIFF (www.melies.org)."),
+            _buildAboutParagraph(
+                "La programmation éclectique du Festival de Strasbourg, mêlant cinéma indépendant, de studios, d’auteur et de niche, attire chaque année un public nombreux et varié. En 2024, il a accueilli plus de 31 000 personnes et présenté 46 longs métrages, 30 films de rétrospectives et 41 courts métrages."),
+            _buildAboutParagraph(
+                "De nombreux événements sont organisés en parallèle : master class, interventions artistiques, conférences, ateliers, expositions, ainsi que la célèbre zombie walk et le Village du Festival. Le festival propose aussi des événements insolites, comme la projection des Dents de la Mer aux Bains municipaux où les spectateurs sont installés sur des sièges flottants."),
+            _buildAboutParagraph(
+                "Depuis 2012, la section « Connexions » explore les mondes numériques au Shadok : Indie Game Contest pour les développeurs indépendants, installations numériques et le VR Film Corner pour les expériences en réalité virtuelle à 360°."),
+            _buildAboutParagraph(
+                "Chacun trouvera son bonheur dans cet événement convivial réunissant cinéphiles, geeks et curieux pour dix jours de festivités dans l’une des plus belles villes de France."),
           ],
           const SizedBox(height: 10),
           Center(

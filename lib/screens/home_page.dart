@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/news_item.dart';
 import 'footer.dart';
 import 'pass_page.dart';
@@ -38,10 +39,13 @@ class HomePage extends StatelessWidget {
       body: ListView(
         children: [
           _HomeSlider(),
-          _HeroDates(), // Bande noire
+          _HeroDates(),
           _PassActionCard(),
           _WelcomeSection(),
           _AboutExpandable(),
+          _buildSectionTitle(context, "Aperçu d'un des films du festival !"),
+          const _VideoPlayerSection(videoId: "2dx5uTN_zgY"),
+
           _buildSectionTitle(context, "Dernières Actualités"),
           ..._festivalNews.map((item) => _NewsCard(item: item)),
           const SizedBox(height: 20),
@@ -60,6 +64,70 @@ class HomePage extends StatelessWidget {
           fontWeight: FontWeight.bold,
           letterSpacing: 1.5,
           color: Colors.black87,
+        ),
+      ),
+    );
+  }
+}
+
+class _VideoPlayerSection extends StatefulWidget {
+  final String videoId;
+  const _VideoPlayerSection({required this.videoId});
+
+  @override
+  State<_VideoPlayerSection> createState() => _VideoPlayerSectionState();
+}
+
+class _VideoPlayerSectionState extends State<_VideoPlayerSection> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          )
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: tertiaryColor,
+          progressColors: const ProgressBarColors(
+            playedColor: tertiaryColor,
+            handleColor: tertiaryColor,
+          ),
         ),
       ),
     );
@@ -114,7 +182,7 @@ class _HeroDates extends StatelessWidget {
   }
 }
 
-// --- 3. SECTION À PROPOS  ---
+// --- 3. SECTION À PROPOS ---
 class _AboutExpandable extends StatefulWidget {
   const _AboutExpandable();
   @override
@@ -144,16 +212,16 @@ class _AboutExpandableState extends State<_AboutExpandable> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("À PROPOS",
+              Text("À PROPOS",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: tertiaryColor,
                       letterSpacing: 2,
                       fontSize: 12)),
-              const Icon(Icons.info_outline, color: tertiaryColor, size: 20),
+              Icon(Icons.info_outline, color: tertiaryColor, size: 20),
             ],
           ),
           const SizedBox(height: 15),
@@ -168,23 +236,14 @@ class _AboutExpandableState extends State<_AboutExpandable> {
           if (isExpanded) ...[
             const SizedBox(height: 15),
             _buildAboutParagraph(
-                "Le Festival européen du film fantastique de Strasbourg est un rendez-vous majeur du cinéma fantastique en France et constitue, parmi les événements européens, l’un des plus complets du genre. Il met en avant les nouvelles productions internationales du cinéma fantastique tout en faisant la part belle aux thrillers, films et comédies noirs, ainsi qu’aux jeux vidéo et au cinéma en réalité virtuelle. Il propose également de nombreuses rétrospectives de films, témoignant de son attachement profond au patrimoine cinématographique."),
+                "Le Festival européen du film fantastique de Strasbourg est un rendez-vous majeur du cinéma fantastique en France..."),
             _buildAboutParagraph(
-                "En sa qualité de membre affilié à la MIFF (Méliès International Festivals Federation), le festival de Strasbourg organise en France la compétition du Méliès d’argent du meilleur film fantastique européen. Les lauréats de ce prix sont automatiquement sélectionnés pour le Méliès d’or qui est remis chaque année dans le cadre de l’un des festivals de la MIFF (www.melies.org)."),
-            _buildAboutParagraph(
-                "La programmation éclectique du Festival de Strasbourg, mêlant cinéma indépendant, de studios, d’auteur et de niche, attire chaque année un public varié. En 2024, il a accueilli plus de 31 000 personnes et présenté 46 longs métrages, 30 films de rétrospectives et 41 courts métrages."),
-            _buildAboutParagraph(
-                "De nombreux événements sont organisés en parallèle : master class, interventions artistiques, conférences, ateliers, expositions, ainsi que la célèbre zombie walk et le Village du Festival. Le festival propose aussi des événements insolites, comme la projection des Dents de la Mer aux Bains municipaux où les spectateurs sont installés sur des sièges flottants."),
-            _buildAboutParagraph(
-                "Depuis 2012, la section « Connexions » explore les mondes numériques au Shadok : Indie Game Contest pour les développeurs indépendants, installations numériques et le VR Film Corner pour les expériences en réalité virtuelle à 360°."),
-            _buildAboutParagraph(
-                "Chacun trouvera son bonheur dans cet événement convivial réunissant cinéphiles, geeks et curieux pour dix jours de festivités dans l’une des plus belles villes de France."),
+                "En sa qualité de membre affilié à la MIFF, le festival organise la compétition du Méliès d’argent..."),
           ],
           const SizedBox(height: 10),
           Center(
             child: TextButton(
               onPressed: () => setState(() => isExpanded = !isExpanded),
-              style: TextButton.styleFrom(padding: EdgeInsets.zero),
               child: Text(isExpanded ? "VOIR MOINS" : "LIRE LA SUITE",
                   style: const TextStyle(
                       color: tertiaryColor,
@@ -197,14 +256,12 @@ class _AboutExpandableState extends State<_AboutExpandable> {
     );
   }
 
-  // Petit helper pour espacer les paragraphes
   Widget _buildAboutParagraph(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         text,
-        style: const TextStyle(
-            color: Colors.black54, height: 1.6, fontSize: 14),
+        style: const TextStyle(color: Colors.black54, height: 1.6, fontSize: 14),
       ),
     );
   }
@@ -234,15 +291,13 @@ class _PassActionCard extends StatelessWidget {
             const Icon(Icons.confirmation_number_outlined, size: 45, color: Colors.white),
             const SizedBox(height: 15),
             const Text("PRÊT POUR L'AVENTURE ?",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.white, letterSpacing: 0.5)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19, color: Colors.white)),
             const SizedBox(height: 18),
             ElevatedButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PassPage())),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF9249CC),
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
               ),
               child: const Text("ACHETER UN PASS", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -266,7 +321,7 @@ class _WelcomeSection extends StatelessWidget {
   }
 }
 
-// --- 6. CARTE NEWS  ---
+// --- 6. CARTE NEWS ---
 class _NewsCard extends StatelessWidget {
   final NewsItem item;
   const _NewsCard({required this.item});
@@ -278,13 +333,8 @@ class _NewsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.black.withOpacity(0.03)),
         boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 20,
-              offset: const Offset(0, 8)
-          )
+          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 20, offset: const Offset(0, 8))
         ],
       ),
       child: Column(

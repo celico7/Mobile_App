@@ -14,6 +14,13 @@
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Nécessaire pour sauvegarder le pass dans la galerie.</string>
 
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
+    <key>NSUserNotificationUsageDescription</key>
+    <string>Nous avons besoin de vous envoyer des rappels pour vos séances de cinéma.</string>
+
     <key>NSAppTransportSecurity</key>
     <dict>
        <key>NSAllowsArbitraryLoads</key>

@@ -42,7 +42,7 @@ Application mobile fictive du **Festival Européen du Film Fantastique de Strasb
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/votre-utilisateur/feffs.git
+git clone https://github.com/KokoCoquelicots/FEFFS_DI.git
 
 # Accéder au dossier du projet
 cd feffs

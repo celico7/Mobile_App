@@ -4,9 +4,9 @@ import 'home_page.dart';
 import 'program_page.dart';
 import 'pass_page.dart';
 import 'quotidienne_page.dart';
-import 'notif_page.dart';
 import 'qrcode_page.dart';
 import '../services/login_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 const Color tertiaryColor = Color(0xFFD78FEE);
 
@@ -20,12 +20,24 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    _requestNotificationPermissions();
+  }
+
+  Future<void> _requestNotificationPermissions() async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+  }
+
   final List<Widget> _pages = [
     const HomePage(),
     const ProgramPage(),
     const PassPage(),
     const QuotidiennePage(),
-    const NotifPage(),
     const QrCodePage(),
   ];
 
@@ -82,7 +94,6 @@ class _MainWrapperState extends State<MainWrapper> {
                 _buildDrawerOption(Icons.calendar_month_outlined, Icons.calendar_month, "Programme", 1),
                 _buildDrawerOption(Icons.confirmation_number_outlined, Icons.confirmation_number, "Achat Pass", 2),
                 _buildDrawerOption(Icons.today_outlined, Icons.today, "Quotidienne", 3),
-                _buildDrawerOption(Icons.notifications_outlined, Icons.notifications, "Notifications", 4, badge: '3'),
                 _buildDrawerOption(Icons.qr_code_scanner_outlined, Icons.qr_code_2, "QR Code", 5),
                 const Spacer(),
                 if (user != null)

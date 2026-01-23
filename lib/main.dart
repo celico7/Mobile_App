@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/main_wrapper.dart';
 import 'services/login_page.dart';
 import 'firebase_options.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,9 +14,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await NotificationService.init();
+
   await initializeDateFormatting('fr_FR', null);
   runApp(const FestivalApp());
 }
+
+
 
 class FestivalApp extends StatelessWidget {
   const FestivalApp({super.key});

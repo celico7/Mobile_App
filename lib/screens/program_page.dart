@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'footer.dart'; // Assure-toi que ce fichier existe bien dans ton projet
+import 'footer.dart';
+import '../services/notification_service.dart';
 
-// ---------------------------------------------------------
-// 1. LE MODÈLE DE DONNÉES
-// ---------------------------------------------------------
 @immutable
 class ProgramItem {
   final String id;
@@ -54,15 +52,11 @@ class ProgramItem {
   }
 }
 
-// ---------------------------------------------------------
-// 2. LE "STOCKAGE" GLOBAL
-// ---------------------------------------------------------
+
+
+
 class DataRepository {
   static List<ProgramItem> allItems = [
-
-    // --- GROSSES THÉMATIQUES (RÉTROSPECTIVES) ---
-
-    // 1. FASCI-FICTION
     const ProgramItem(
         id: 'retro_fascifiction',
         title: "FasciFiction",
@@ -72,7 +66,7 @@ class DataRepository {
         description: "FasciFiction présente 11 films éminemment politiques qui imaginent la vie sous des régimes tyranniques. De Alphaville à 1984, ces films dissèquent les outils totalitaires.",
         director: "Thématique", countryEmoji: "🌍"),
 
-    // 2. CARTE BLANCHE AJA (Déplacé dans Rétrospectives comme demandé)
+
     const ProgramItem(
         id: 'carte_blanche_aja',
         title: "Carte blanche Aja",
@@ -82,27 +76,27 @@ class DataRepository {
         description: "Alexandre Aja nous propose ses coups de cœur : de Onibaba à The Thing.",
         director: "Alexandre Aja", countryEmoji: "🇫🇷"),
 
-    // 3. DOUBLE PROGRAMME SIRI (Nouveau)
+
     const ProgramItem(
         id: 'retro_siri',
         title: "Double programme Siri",
         category: "Rétrospectives",
         subCategory: "Hommage",
-        imageUrl: "assets/images/program/siri.png", // Mets une image de Florent-Emilio Siri ou d'un de ses films
+        imageUrl: "assets/images/program/siri.png",
         description: "Focus sur le réalisateur Florent-Emilio Siri avec deux films d'action intenses.",
         director: "F-E. Siri", countryEmoji: "🇫🇷"),
 
-    // 4. GUILTY PLEASURES (Nouveau)
+
     const ProgramItem(
         id: 'retro_guilty',
         title: "Guilty Pleasures",
         category: "Rétrospectives",
         subCategory: "Culte",
-        imageUrl: "assets/images/program/jaws.png", // Image des dents de la mer
+        imageUrl: "assets/images/program/jaws.png",
         description: "Des films cultes, effrayants ou étranges qu'on adore revoir.",
         director: "Sélection", countryEmoji: "🍿"),
 
-    // --- ÉVÉNEMENTS ---
+
     const ProgramItem(
         id: 'nuit_excentrique',
         title: "La Nuit excentrique",
@@ -112,8 +106,6 @@ class DataRepository {
         description: "Trois longs métrages truffés de faux raccords et d'effets spéciaux douteux. Petit déjeuner offert !",
         director: "Cinémathèque", countryEmoji: "🌙"),
 
-
-    // --- FILMS INDIVIDUELS (Classiques & Nouveautés) ---
     const ProgramItem(
         id: '1', title: "Good Boy", category: "Palmarès", subCategory: "Longs métrages",
         imageUrl: "assets/images/program/FANTASTIQUE-GOOD-BOY.png",
@@ -139,9 +131,6 @@ class DataRepository {
         imageUrl: "assets/images/program/theCurse.png",
         description: "Alertée par les messages inquiétants de son amie postés depuis Taïwan...",
         director: "Kenichi Ugana", countryEmoji: "🇯🇵"),
-
-    // --- JURYS (Complet) ---
-    // Films Fantastiques
     const ProgramItem(
         id: '5', title: "Alexandre Aja", category: "Jurys", subCategory: "Films fantastiques",
         imageUrl: "assets/images/program/jurys/alexAja.png",
@@ -158,7 +147,7 @@ class DataRepository {
         description: "Producteur de Grave et Titane.",
         director: "Jury", countryEmoji: "🇧🇪"),
 
-    // Méliès
+
     const ProgramItem(
         id: '8', title: "Stéphan Castang", category: "Jurys", subCategory: "Méliès d’argent",
         imageUrl: "assets/images/program/jurys/Stephan-Castang.png",
@@ -170,21 +159,19 @@ class DataRepository {
         description: "Journaliste cinéma pour Sofilm.",
         director: "Jury", countryEmoji: "🇫🇷"),
 
-    // Crossovers
     const ProgramItem(
         id: '10', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
         imageUrl: "assets/images/program/jurys/moissakis.png",
         description: "Journaliste et co-fondateur de Capture Mag.",
         director: "Jury", countryEmoji: "🇫🇷"),
 
-    // Animés
+
     const ProgramItem(
         id: '11', title: "Marc Jousset", category: "Jurys", subCategory: "Films animés",
         imageUrl: "assets/images/program/jurys/jousset.png",
         description: "Producteur de Persepolis.",
         director: "Jury", countryEmoji: "🇫🇷"),
 
-    // Courts
     const ProgramItem(
         id: '12', title: "Kinane Moualla", category: "Jurys", subCategory: "Courts métrages",
         imageUrl: "assets/images/program/jurys/moualla.png",
@@ -205,9 +192,6 @@ class DataRepository {
   ];
 }
 
-// ---------------------------------------------------------
-// 3. LA PAGE PRINCIPALE
-// ---------------------------------------------------------
 class ProgramPage extends StatefulWidget {
   const ProgramPage({super.key});
 
@@ -216,7 +200,6 @@ class ProgramPage extends StatefulWidget {
 }
 
 class _ProgramPageState extends State<ProgramPage> {
-  // Liste des filtres EXACTE par rapport aux catégories des données
   final List<String> _categories = const [
     "Tout", "Favoris", "Palmarès", "Longs métrages", "Rétrospectives",
     "Courts métrages", "Connexions", "Événements", "Jurys"
@@ -239,9 +222,20 @@ class _ProgramPageState extends State<ProgramPage> {
     setState(() {
       final index = DataRepository.allItems.indexWhere((item) => item.id == itemId);
       if (index != -1) {
-        DataRepository.allItems[index] = DataRepository.allItems[index].copyWith(
-            isFavorite: !DataRepository.allItems[index].isFavorite
+        final item = DataRepository.allItems[index];
+        bool newFavoriteStatus = !item.isFavorite;
+
+        DataRepository.allItems[index] = item.copyWith(
+            isFavorite: newFavoriteStatus
         );
+
+        if (newFavoriteStatus) {
+          NotificationService.showNotification(
+            id: item.id.hashCode,
+            title: "Favori ajouté !",
+            body: "Le film '${item.title}' a été ajouté à votre sélection.",
+          );
+        }
       }
     });
   }
@@ -330,19 +324,14 @@ class _ProgramPageState extends State<ProgramPage> {
 
   @override
   Widget build(BuildContext context) {
-    // LOGIQUE DE FILTRAGE CORRIGÉE
     List<ProgramItem> filteredList = DataRepository.allItems.where((item) {
-      // 1. Si "Tout" est sélectionné
       if (_selectedCategories.contains("Tout")) return true;
-      // 2. Si "Favoris" est sélectionné
       if (_selectedCategories.contains("Favoris") && item.isFavorite) return true;
-      // 3. Correspondance exacte de catégorie
       if (_selectedCategories.contains(item.category)) return true;
 
       return false;
     }).toList();
 
-    // Sous-filtre Jurys
     if (_selectedCategories.contains("Jurys") && _selectedJurySubFilter != "Tous les jurys") {
       filteredList = filteredList.where((item) {
         if (item.category == "Jurys") return item.subCategory == _selectedJurySubFilter;
@@ -350,14 +339,12 @@ class _ProgramPageState extends State<ProgramPage> {
       }).toList();
     }
 
-    // UTILISATION D'UNE LISTVIEW GLOBALE POUR POUVOIR METTRE LE FOOTER EN BAS
     return Scaffold(
       body: ListView(
-        padding: EdgeInsets.zero, // On gère le padding manuellement
+        padding: EdgeInsets.zero,
         children: [
-          // 1. HEADER
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 50, 16, 10), // Padding top augmenté pour la barre d'état
+            padding: const EdgeInsets.fromLTRB(16, 50, 16, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -380,10 +367,8 @@ class _ProgramPageState extends State<ProgramPage> {
             ),
           ),
 
-          // 2. FILTRES
           _buildFilterBar(),
 
-          // 3. SOUS-FILTRES JURYS
           if (_selectedCategories.contains("Jurys"))
             Container(
               height: 40,
@@ -417,9 +402,6 @@ class _ProgramPageState extends State<ProgramPage> {
                 },
               ),
             ),
-
-          // 4. GRILLE DES RÉSULTATS
-          // On utilise physics: NeverScrollableScrollPhysics car c'est déjà dans une ListView
           filteredList.isEmpty
               ? SizedBox(
             height: 300,
@@ -452,7 +434,7 @@ class _ProgramPageState extends State<ProgramPage> {
           ),
 
           const FestivalFooter(),
-          const SizedBox(height: 20), // Un peu d'espace en bas
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -545,9 +527,9 @@ class _ProgramPageState extends State<ProgramPage> {
   }
 }
 
-// ---------------------------------------------------------
-// 4. LES WIDGETS (Carte)
-// ---------------------------------------------------------
+
+
+
 class _ProgramCard extends StatelessWidget {
   final ProgramItem item;
   final VoidCallback onFavoriteChanged;
@@ -599,7 +581,6 @@ class _ProgramCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    // Affiche le sous-type si dispo (ex: "Films Fantastiques")
                     (item.subCategory != null) ? item.subCategory!.toUpperCase() : item.category.toUpperCase(),
                     style: TextStyle(
                         color: (item.category == "Jurys") ? Colors.black : Colors.white,
@@ -640,17 +621,15 @@ class _ProgramCard extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------
-// 5. PAGE DE DÉTAIL
-// ---------------------------------------------------------
+
+
+
 class _DetailPage extends StatelessWidget {
   final ProgramItem item;
   const _DetailPage({required this.item});
 
   @override
   Widget build(BuildContext context) {
-
-    // CONTENU SPÉCIFIQUE (Listes des films pour les rétrospectives)
     List<String> contentList = [];
 
     if (item.title == "FasciFiction") {
@@ -748,8 +727,6 @@ class _DetailPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(item.description,
                       style: const TextStyle(color: Colors.white70, fontSize: 15, height: 1.6)),
-
-                  // LISTE DES FILMS (RÉTROSPECTIVES)
                   if (contentList.isNotEmpty) ...[
                     const SizedBox(height: 40),
                     const Divider(color: Colors.white12),

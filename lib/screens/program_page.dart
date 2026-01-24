@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 import 'footer.dart';
 import '../services/notification_service.dart';
+
+// modèle de donnéé
 
 @immutable
 class ProgramItem {
@@ -15,6 +18,10 @@ class ProgramItem {
   final String director;
   final String countryEmoji;
 
+  final DateTime startTime;
+  final int durationMinutes;
+  final String location;
+
   const ProgramItem({
     required this.id,
     required this.title,
@@ -25,7 +32,13 @@ class ProgramItem {
     this.isFavorite = false,
     required this.director,
     required this.countryEmoji,
+    required this.startTime,
+    required this.durationMinutes,
+    required this.location,
   });
+
+  // Calcul heure de fin
+  DateTime get endTime => startTime.add(Duration(minutes: durationMinutes));
 
   ProgramItem copyWith({
     String? id,
@@ -37,6 +50,9 @@ class ProgramItem {
     bool? isFavorite,
     String? director,
     String? countryEmoji,
+    DateTime? startTime,
+    int? durationMinutes,
+    String? location,
   }) {
     return ProgramItem(
       id: id ?? this.id,
@@ -48,147 +64,179 @@ class ProgramItem {
       isFavorite: isFavorite ?? this.isFavorite,
       director: director ?? this.director,
       countryEmoji: countryEmoji ?? this.countryEmoji,
+      startTime: startTime ?? this.startTime,
+      durationMinutes: durationMinutes ?? this.durationMinutes,
+      location: location ?? this.location,
     );
   }
 }
 
-
-
+// données
 
 class DataRepository {
+
+  static DateTime _makeDate(int day, int hour, int minute) {
+    return DateTime(2026, 9, day, hour, minute);
+  }
+
   static List<ProgramItem> allItems = [
-    const ProgramItem(
+
+    // rétro / evenmenets
+    ProgramItem(
         id: 'retro_fascifiction',
         title: "FasciFiction",
-        category: "Rétrospectives",
-        subCategory: "Politique",
+        category: "Rétrospectives", subCategory: "Politique",
         imageUrl: "assets/images/program/fasci_fiction.png",
         description: "FasciFiction présente 11 films éminemment politiques qui imaginent la vie sous des régimes tyranniques. De Alphaville à 1984, ces films dissèquent les outils totalitaires.",
-        director: "Thématique", countryEmoji: "🌍"),
+        director: "Thématique", countryEmoji: "🌍",
+        startTime: _makeDate(26, 14, 00), durationMinutes: 120, location: "Cinéma Vox - Salle 1"),
 
-
-    const ProgramItem(
+    ProgramItem(
         id: 'carte_blanche_aja',
         title: "Carte blanche Aja",
-        category: "Rétrospectives",
-        subCategory: "Invité",
+        category: "Rétrospectives", subCategory: "Invité",
         imageUrl: "assets/images/program/jurys/alexAja.png",
         description: "Alexandre Aja nous propose ses coups de cœur : de Onibaba à The Thing.",
-        director: "Alexandre Aja", countryEmoji: "🇫🇷"),
+        director: "Alexandre Aja", countryEmoji: "🇫🇷",
+        startTime: _makeDate(27, 20, 00), durationMinutes: 180, location: "UGC Ciné Cité - Salle 12"),
 
-
-    const ProgramItem(
+    ProgramItem(
         id: 'retro_siri',
         title: "Double programme Siri",
-        category: "Rétrospectives",
-        subCategory: "Hommage",
+        category: "Rétrospectives", subCategory: "Hommage",
         imageUrl: "assets/images/program/siri.png",
         description: "Focus sur le réalisateur Florent-Emilio Siri avec deux films d'action intenses.",
-        director: "F-E. Siri", countryEmoji: "🇫🇷"),
+        director: "F-E. Siri", countryEmoji: "🇫🇷",
+        startTime: _makeDate(28, 16, 30), durationMinutes: 210, location: "Star St-Exupéry"),
 
-
-    const ProgramItem(
+    ProgramItem(
         id: 'retro_guilty',
         title: "Guilty Pleasures",
-        category: "Rétrospectives",
-        subCategory: "Culte",
+        category: "Rétrospectives", subCategory: "Culte",
         imageUrl: "assets/images/program/jaws.png",
         description: "Des films cultes, effrayants ou étranges qu'on adore revoir.",
-        director: "Sélection", countryEmoji: "🍿"),
+        director: "Sélection", countryEmoji: "🍿",
+        startTime: _makeDate(29, 22, 00), durationMinutes: 100, location: "Cinéma Vox - Salle 3"),
 
-
-    const ProgramItem(
+    ProgramItem(
         id: 'nuit_excentrique',
         title: "La Nuit excentrique",
-        category: "Événements",
-        subCategory: "Nuit Nanar",
+        category: "Événements", subCategory: "Nuit Nanar",
         imageUrl: "assets/images/program/nuit_excentrique.png",
-        description: "Trois longs métrages truffés de faux raccords et d'effets spéciaux douteux. Petit déjeuner offert !",
-        director: "Cinémathèque", countryEmoji: "🌙"),
+        description: "Trois longs métrages truffés de faux raccords...",
+        director: "Cinémathèque", countryEmoji: "🌙",
+        startTime: _makeDate(27, 23, 59), durationMinutes: 360, location: "Star St-Exupéry - Grande Salle"),
 
-    const ProgramItem(
+    ProgramItem(
+        id: '16', title: "Les Étranges Couleurs De VRANCKX", category: "Événements",
+        imageUrl: "assets/images/program/VRANCKX.png",
+        description: "Découvrez l’univers envoûtant de l’artiste belge Gilles Vranckx...",
+        director: "Exposition", countryEmoji: "🇧🇪",
+        startTime: _makeDate(26, 10, 00), durationMinutes: 600, location: "Village du Festival"),
+
+    ProgramItem(
+        id: '17', title: "SoFilm de Genre : lecture", category: "Événements",
+        imageUrl: "assets/images/program/SoFilm-de-Genre.png",
+        description: "Le magazine Sofilm organise des résidences de création...",
+        director: "Atelier", countryEmoji: "🇫🇷",
+        startTime: _makeDate(29, 14, 30), durationMinutes: 225, location: "Cinéma Vox"),
+
+    // films
+    ProgramItem(
         id: '1', title: "Good Boy", category: "Palmarès", subCategory: "Longs métrages",
         imageUrl: "assets/images/program/FANTASTIQUE-GOOD-BOY.png",
-        description: "Indy, le fidèle retriever de Todd, accompagne ce dernier dans une maison isolée...",
-        director: "Ben Leonberg", countryEmoji: "🇺🇸"),
-    const ProgramItem(
+        description: "Indy, le fidèle retriever de Todd, accompagne ce dernier...",
+        director: "Ben Leonberg", countryEmoji: "🇺🇸",
+        startTime: _makeDate(26, 18, 00), durationMinutes: 90, location: "UGC Ciné Cité - Salle 4"),
+
+    ProgramItem(
         id: '2', title: "Bugonia", category: "Longs métrages",
         imageUrl: "assets/images/program/bugonia.png",
         description: "Deux jeunes hommes obsédés par les théories du complot...",
-        director: "Yorgos Lanthimos", countryEmoji: "🇬🇧"),
-    const ProgramItem(
+        director: "Yorgos Lanthimos", countryEmoji: "🇬🇧",
+        startTime: _makeDate(26, 20, 30), durationMinutes: 110, location: "Star St-Exupéry"),
+
+    ProgramItem(
         id: '3', title: "LESS THAN 5GR OF SAFFRON", category: "Connexions",
         imageUrl: "assets/images/program/LT5OS.png",
-        description: "Golnaz, une jeune Iranienne de 23 ans qui a immigré en Allemagne...",
-        director: "Négar Motevalymeidanshah", countryEmoji: "🇮🇷"),
-    const ProgramItem(
+        description: "Dans un désert postapocalyptique...",
+        director: "Négar M.", countryEmoji: "🇮🇷",
+        startTime: _makeDate(28, 14, 00), durationMinutes: 95, location: "Cinéma Vox"),
+
+    ProgramItem(
+        id: '4', title: "MAD MAX: FURY ROAD", category: "Connexions",
+        imageUrl: "assets/images/program/madmax.png",
+        description: "Golnaz, une jeune Iranienne de 23 ans...",
+        director: "George Miller", countryEmoji: "🇦🇺",
+        startTime: _makeDate(30, 20, 00), durationMinutes: 120, location: "UGC Ciné Cité - Salle 1"),
+
+    ProgramItem(
         id: '13', title: "Double or Nothing", category: "Palmarès", subCategory: "Courts métrages",
         imageUrl: "assets/images/program/Double-or-Nothing.png",
         description: "Un Américain débarque dans le Tokyo des années 1980...",
-        director: "Tokay Sirin", countryEmoji: "🇨🇭"),
-    const ProgramItem(
+        director: "Tokay Sirin", countryEmoji: "🇨🇭",
+        startTime: _makeDate(27, 11, 00), durationMinutes: 20, location: "Star St-Exupéry"),
+
+    ProgramItem(
         id: '14', title: "The Curse", category: "Longs métrages", subCategory: "Films fantastiques",
         imageUrl: "assets/images/program/theCurse.png",
-        description: "Alertée par les messages inquiétants de son amie postés depuis Taïwan...",
-        director: "Kenichi Ugana", countryEmoji: "🇯🇵"),
-    const ProgramItem(
+        description: "Alertée par les messages inquiétants...",
+        director: "Kenichi Ugana", countryEmoji: "🇯🇵",
+        startTime: _makeDate(27, 22, 15), durationMinutes: 105, location: "Cinéma Vox"),
+
+    ProgramItem(
+        id: '15', title: "Gynoid", category: "Courts métrages",
+        imageUrl: "assets/images/program/gynoid.png",
+        description: "Dans un futur proche, deux femmes participent...",
+        director: "Celia Galán", countryEmoji: "🇪🇸",
+        startTime: _makeDate(27, 11, 25), durationMinutes: 15, location: "Star St-Exupéry"),
+
+    ProgramItem(
+        id: '18', title: "Sardinia", category: "Courts métrages",
+        imageUrl: "assets/images/program/sardinia.png",
+        description: "Dans une société dystopique, l’apparition d’un oiseau...",
+        director: "Paul Kowalski", countryEmoji: "🇺🇸 🇵🇱",
+        startTime: _makeDate(27, 11, 45), durationMinutes: 25, location: "Star St-Exupéry"),
+
+    // jurys
+    ProgramItem(
         id: '5', title: "Alexandre Aja", category: "Jurys", subCategory: "Films fantastiques",
         imageUrl: "assets/images/program/jurys/alexAja.png",
-        description: "Président du Jury. Réalisateur de Haute Tension et Crawl.",
-        director: "Président", countryEmoji: "🇫🇷"),
-    const ProgramItem(
+        description: "Président du Jury.",
+        director: "Président", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+
+    ProgramItem(
         id: '6', title: "Judith Berlanda-Beauvallet", category: "Jurys", subCategory: "Films fantastiques",
         imageUrl: "assets/images/program/jurys/JudithB-B.png",
         description: "Créatrice de la chaîne Demoiselles d’Horreur.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-    const ProgramItem(
+        director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+
+    ProgramItem(
         id: '7', title: "Jean-Yves Roubin", category: "Jurys", subCategory: "Films fantastiques",
-        imageUrl: "assets/images/program/jurys/JYR.png",
-        description: "Producteur de Grave et Titane.",
-        director: "Jury", countryEmoji: "🇧🇪"),
-
-
-    const ProgramItem(
+        imageUrl: "assets/images/program/jurys/JYR.png", description: "Producteur.", director: "Jury", countryEmoji: "🇧🇪",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+    ProgramItem(
         id: '8', title: "Stéphan Castang", category: "Jurys", subCategory: "Méliès d’argent",
-        imageUrl: "assets/images/program/jurys/Stephan-Castang.png",
-        description: "Réalisateur de Vincent doit mourir.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-    const ProgramItem(
+        imageUrl: "assets/images/program/jurys/Stephan-Castang.png", description: "Réalisateur.", director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+    ProgramItem(
         id: '9', title: "Marine Bohin", category: "Jurys", subCategory: "Méliès d’argent",
-        imageUrl: "assets/images/program/jurys/bohin.png",
-        description: "Journaliste cinéma pour Sofilm.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-
-    const ProgramItem(
+        imageUrl: "assets/images/program/jurys/bohin.png", description: "Journaliste.", director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+    ProgramItem(
         id: '10', title: "Stéphane Moïssakis", category: "Jurys", subCategory: "Crossovers",
-        imageUrl: "assets/images/program/jurys/moissakis.png",
-        description: "Journaliste et co-fondateur de Capture Mag.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-
-
-    const ProgramItem(
+        imageUrl: "assets/images/program/jurys/moissakis.png", description: "Capture Mag.", director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+    ProgramItem(
         id: '11', title: "Marc Jousset", category: "Jurys", subCategory: "Films animés",
-        imageUrl: "assets/images/program/jurys/jousset.png",
-        description: "Producteur de Persepolis.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-
-    const ProgramItem(
+        imageUrl: "assets/images/program/jurys/jousset.png", description: "Producteur.", director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
+    ProgramItem(
         id: '12', title: "Kinane Moualla", category: "Jurys", subCategory: "Courts métrages",
-        imageUrl: "assets/images/program/jurys/moualla.png",
-        description: "Ingénieur du son.",
-        director: "Jury", countryEmoji: "🇫🇷"),
-
-    const ProgramItem(
-        id: '13', title: "Gynoid", category: "Courts métrages",
-        imageUrl: "assets/images/program/gynoid.png",
-        description: "Dans un futur proche, deux femmes participent à une expérience orchestrée par une entreprise de robotique pour déterminer laquelle d’entre elles est une androïde. Persuadées toutes les deux d’être humaines, elles s’engagent dans un face-à-face troublant, entre doute, manipulation et instinct de survie.",
-        director: "Celia Galán", countryEmoji: "🇪🇸"),
-
-    const ProgramItem(
-        id: '14', title: "Sardinia", category: "Courts métrages",
-        imageUrl: "assets/images/program/sardinia.png",
-        description: "Dans une société dystopique, l’apparition d’un oiseau exotique déclenche une épidémie de rires incontrôlables qui se répand à grande vitesse. Un homme, étrangement immunisé, tente de protéger son père malade et son épouse, alors que le monde sombre peu à peu dans l’absurde et le chaos.",
-        director: "Paul Kowalski", countryEmoji: "🇺🇸 🇵🇱"),
+        imageUrl: "assets/images/program/jurys/moualla.png", description: "Ingénieur son.", director: "Jury", countryEmoji: "🇫🇷",
+        startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
   ];
 }
 
@@ -203,7 +251,6 @@ class _ProgramPageState extends State<ProgramPage> {
   final List<String> _categories = const [
     "Tout", "Favoris", "Palmarès", "Longs métrages", "Rétrospectives",
     "Courts métrages", "Connexions", "Événements", "Jurys"
-
   ];
 
   final List<String> _jurySubCategories = const [
@@ -222,22 +269,59 @@ class _ProgramPageState extends State<ProgramPage> {
     setState(() {
       final index = DataRepository.allItems.indexWhere((item) => item.id == itemId);
       if (index != -1) {
-        final item = DataRepository.allItems[index];
-        bool newFavoriteStatus = !item.isFavorite;
+        final itemToToggle = DataRepository.allItems[index];
+        bool isAdding = !itemToToggle.isFavorite;
 
-        DataRepository.allItems[index] = item.copyWith(
-            isFavorite: newFavoriteStatus
-        );
-
-        if (newFavoriteStatus) {
-          NotificationService.showNotification(
-            id: item.id.hashCode,
-            title: "Favori ajouté !",
-            body: "Le film '${item.title}' a été ajouté à votre sélection.",
-          );
+        void applyChange() {
+          setState(() {
+            DataRepository.allItems[index] = itemToToggle.copyWith(isFavorite: isAdding);
+          });
+          if (isAdding) {
+            NotificationService.showNotification(
+              id: itemToToggle.id.hashCode,
+              title: "Ajouté au programme !",
+              body: "${itemToToggle.title} à ${DateFormat('HH:mm').format(itemToToggle.startTime)}",
+            );
+          }
         }
+
+        if (isAdding) {
+          final currentFavorites = DataRepository.allItems.where((i) => i.isFavorite).toList();
+
+          for (var fav in currentFavorites) {
+            if (itemToToggle.startTime.isBefore(fav.endTime) &&
+                itemToToggle.endTime.isAfter(fav.startTime)) {
+
+              _showConflictWarning(fav.title, itemToToggle.title, applyChange);
+            }
+          }
+        }
+        applyChange();
       }
     });
+  }
+
+  void _showConflictWarning(String existingMovie, String newMovie, VoidCallback onForceAdd) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Conflit d'horaire"),
+        content: Text("Attention, '$newMovie' a lieu en même temps que '$existingMovie' qui est déjà dans votre programme !"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text("J'ai compris", style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              onForceAdd();
+            },
+            child: const Text("Ajouter quand même", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+          )
+        ],
+      ),
+    );
   }
 
   void _onCategorySelected(String cat, bool selected) {
@@ -301,19 +385,19 @@ class _ProgramPageState extends State<ProgramPage> {
             const Text("Documents Officiels", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 30),
             _buildDownloadButton(
-              title: "Catalogue 2024",
-              subtitle: "PDF Complet • 12 Mo",
+              title: "Catalogue 2025",
+              subtitle: "PDF Complet • 12.4 Mo",
               icon: Icons.menu_book,
               color: Colors.black,
-              onTap: () => _launchDownload("https://strasbourgfestival.com/wp-content/uploads/2024/09/FEFFS_2024_CATALOGUE_WEB.pdf"),
+              onTap: () => _launchDownload("https://strasbourgfestival.com/wp-content/uploads/2025/09/FEFFS-2025-A5-nocoupe-planche.pdf"),
             ),
             const SizedBox(height: 12),
             _buildDownloadButton(
-              title: "Grille Horaire 2024",
-              subtitle: "Planning express • 2 Mo",
+              title: "Grille Horaire 2025",
+              subtitle: "Planning express • 220 Ko",
               icon: Icons.calendar_month,
               color: const Color(0xFFD78FEE),
-              onTap: () => _launchDownload("https://strasbourgfestival.com/wp-content/uploads/2024/09/FEFFS_2024_GRILLE_WEB.pdf"),
+              onTap: () => _launchDownload("https://strasbourgfestival.com/wp-content/uploads/2025/09/FEFFS-2025-Grille.pdf"),
             ),
             const SizedBox(height: 20),
           ],
@@ -328,7 +412,6 @@ class _ProgramPageState extends State<ProgramPage> {
       if (_selectedCategories.contains("Tout")) return true;
       if (_selectedCategories.contains("Favoris") && item.isFavorite) return true;
       if (_selectedCategories.contains(item.category)) return true;
-
       return false;
     }).toList();
 
@@ -457,6 +540,7 @@ class _ProgramPageState extends State<ProgramPage> {
             return FilterChip(
               avatar: Icon(Icons.favorite, size: 16, color: isSelected ? Colors.white : Colors.red),
               label: Text(cat),
+              tooltip: 'Ajouter aux favoris',
               selected: isSelected,
               onSelected: (bool selected) => _onCategorySelected(cat, selected),
               selectedColor: Colors.red,
@@ -527,9 +611,6 @@ class _ProgramPageState extends State<ProgramPage> {
   }
 }
 
-
-
-
 class _ProgramCard extends StatelessWidget {
   final ProgramItem item;
   final VoidCallback onFavoriteChanged;
@@ -538,6 +619,8 @@ class _ProgramCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dateString = DateFormat('EEE HH:mm', 'fr_FR').format(item.startTime);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => _DetailPage(item: item)));
@@ -563,11 +646,11 @@ class _ProgramCard extends StatelessWidget {
               Positioned(
                 bottom: 0, left: 0, right: 0,
                 child: Container(
-                  height: 80,
+                  height: 90,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.9)],
+                      colors: [Colors.transparent, Colors.black.withOpacity(0.95)],
                     ),
                   ),
                 ),
@@ -590,15 +673,40 @@ class _ProgramCard extends StatelessWidget {
                 ),
               ),
               Positioned(
+                top: 8, right: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD78FEE),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    dateString,
+                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Positioned(
                 bottom: 8, left: 8, right: 8,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: Text(
-                        item.title,
-                        maxLines: 2, overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13, height: 1.2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            item.title,
+                            maxLines: 2, overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13, height: 1.2),
+                          ),
+                          Text(
+                            item.location,
+                            maxLines: 1, overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.white70, fontSize: 10),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -621,39 +729,27 @@ class _ProgramCard extends StatelessWidget {
   }
 }
 
-
-
-
 class _DetailPage extends StatelessWidget {
   final ProgramItem item;
   const _DetailPage({required this.item});
 
   @override
   Widget build(BuildContext context) {
-    List<String> contentList = [];
+    final dateFormat = DateFormat('EEEE d MMMM', 'fr_FR');
+    final timeFormat = DateFormat('HH:mm');
+    final endDateTime = item.startTime.add(Duration(minutes: item.durationMinutes));
 
+    List<String> contentList = [];
     if (item.title == "FasciFiction") {
-      contentList = [
-        "The Testament of Dr. Mabuse", "Animal Farm", "Alphaville",
-        "Fahrenheit 451", "The Year of the Cannibals", "THX 1138",
-        "The Dead Zone", "Nineteen Eighty-Four", "The Handmaid’s Tale",
-        "Starship Troopers", "Jin-Rô"
-      ];
+      contentList = ["The Testament of Dr. Mabuse", "Animal Farm", "Alphaville", "Fahrenheit 451", "The Year of the Cannibals", "THX 1138", "The Dead Zone", "Nineteen Eighty-Four", "The Handmaid’s Tale", "Starship Troopers", "Jin-Rô"];
     } else if (item.title.contains("Aja")) {
-      contentList = [
-        "High Tension", "The Hills Have Eyes", "Piranha 3D",
-        "Horns", "Crawl", "Never Let Go"
-      ];
+      contentList = ["High Tension", "The Hills Have Eyes", "Piranha 3D", "Horns", "Crawl", "Never Let Go"];
     } else if (item.title.contains("Siri")) {
       contentList = ["Nid de Guêpes", "Otage"];
     } else if (item.title == "Guilty Pleasures") {
       contentList = ["Jacob’s Ladder", "The Changeling", "Jaws"];
     } else if (item.title == "La Nuit excentrique") {
-      contentList = [
-        "Super Riders Against The Devil",
-        "Godzilla vs. Mechagodzilla",
-        "Hänsel und Gretel verliefen sich im Wald"
-      ];
+      contentList = ["Super Riders Against The Devil", "Godzilla vs. Mechagodzilla", "Hänsel und Gretel verliefen sich im Wald"];
     }
 
     return Scaffold(
@@ -721,12 +817,35 @@ class _DetailPage extends StatelessWidget {
                       ]
                     ],
                   ),
-                  const SizedBox(height: 25),
+
+                  const SizedBox(height: 30),
+
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white10)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildInfoCol(Icons.calendar_today, "DATE", dateFormat.format(item.startTime)),
+                        Container(width: 1, height: 40, color: Colors.white24),
+                        _buildInfoCol(Icons.access_time, "HORAIRE", "${timeFormat.format(item.startTime)} - ${timeFormat.format(endDateTime)}"),
+                        Container(width: 1, height: 40, color: Colors.white24),
+                        _buildInfoCol(Icons.location_on, "LIEU", item.location),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
                   const Text("À PROPOS",
                       style: TextStyle(color: Color(0xFFD78FEE), fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.2)),
                   const SizedBox(height: 10),
                   Text(item.description,
                       style: const TextStyle(color: Colors.white70, fontSize: 15, height: 1.6)),
+
                   if (contentList.isNotEmpty) ...[
                     const SizedBox(height: 40),
                     const Divider(color: Colors.white12),
@@ -765,6 +884,20 @@ class _DetailPage extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCol(IconData icon, String label, String value) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, color: const Color(0xFFD78FEE), size: 20),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(value, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
         ],
       ),
     );

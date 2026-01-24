@@ -4,8 +4,7 @@ import 'package:intl/intl.dart';
 import 'footer.dart';
 import '../services/notification_service.dart';
 
-// modèle de donnéé
-
+// modèle données
 @immutable
 class ProgramItem {
   final String id;
@@ -17,7 +16,6 @@ class ProgramItem {
   final bool isFavorite;
   final String director;
   final String countryEmoji;
-
   final DateTime startTime;
   final int durationMinutes;
   final String location;
@@ -37,7 +35,6 @@ class ProgramItem {
     required this.location,
   });
 
-  // Calcul heure de fin
   DateTime get endTime => startTime.add(Duration(minutes: durationMinutes));
 
   ProgramItem copyWith({
@@ -70,63 +67,50 @@ class ProgramItem {
     );
   }
 }
-
-// données
-
+//données
 class DataRepository {
-
   static DateTime _makeDate(int day, int hour, int minute) {
-    return DateTime(2026, 9, day, hour, minute);
+    return DateTime(2025, 9, day, hour, minute);
   }
 
   static List<ProgramItem> allItems = [
-
-    // rétro / evenmenets
+    // retro
     ProgramItem(
-        id: 'retro_fascifiction',
-        title: "FasciFiction",
-        category: "Rétrospectives", subCategory: "Politique",
+        id: 'retro_fascifiction', title: "FasciFiction", category: "Rétrospectives", subCategory: "Politique",
         imageUrl: "assets/images/program/fasci_fiction.png",
-        description: "FasciFiction présente 11 films éminemment politiques qui imaginent la vie sous des régimes tyranniques. De Alphaville à 1984, ces films dissèquent les outils totalitaires.",
+        description: "FasciFiction présente 11 films éminemment politiques...",
         director: "Thématique", countryEmoji: "🌍",
         startTime: _makeDate(26, 14, 00), durationMinutes: 120, location: "Cinéma Vox - Salle 1"),
 
     ProgramItem(
-        id: 'carte_blanche_aja',
-        title: "Carte blanche Aja",
-        category: "Rétrospectives", subCategory: "Invité",
+        id: 'carte_blanche_aja', title: "Carte blanche Aja", category: "Rétrospectives", subCategory: "Invité",
         imageUrl: "assets/images/program/jurys/alexAja.png",
-        description: "Alexandre Aja nous propose ses coups de cœur : de Onibaba à The Thing.",
+        description: "Alexandre Aja nous propose ses coups de cœur...",
         director: "Alexandre Aja", countryEmoji: "🇫🇷",
         startTime: _makeDate(27, 20, 00), durationMinutes: 180, location: "UGC Ciné Cité - Salle 12"),
 
     ProgramItem(
-        id: 'retro_siri',
-        title: "Double programme Siri",
-        category: "Rétrospectives", subCategory: "Hommage",
+        id: 'retro_siri', title: "Double programme Siri", category: "Rétrospectives", subCategory: "Hommage",
         imageUrl: "assets/images/program/siri.png",
-        description: "Focus sur le réalisateur Florent-Emilio Siri avec deux films d'action intenses.",
+        description: "Focus sur le réalisateur Florent-Emilio Siri...",
         director: "F-E. Siri", countryEmoji: "🇫🇷",
         startTime: _makeDate(28, 16, 30), durationMinutes: 210, location: "Star St-Exupéry"),
 
     ProgramItem(
-        id: 'retro_guilty',
-        title: "Guilty Pleasures",
-        category: "Rétrospectives", subCategory: "Culte",
+        id: 'retro_guilty', title: "Guilty Pleasures", category: "Rétrospectives", subCategory: "Culte",
         imageUrl: "assets/images/program/jaws.png",
-        description: "Des films cultes, effrayants ou étranges qu'on adore revoir.",
+        description: "Des films cultes, effrayants ou étranges...",
         director: "Sélection", countryEmoji: "🍿",
         startTime: _makeDate(29, 22, 00), durationMinutes: 100, location: "Cinéma Vox - Salle 3"),
 
     ProgramItem(
-        id: 'nuit_excentrique',
-        title: "La Nuit excentrique",
-        category: "Événements", subCategory: "Nuit Nanar",
+        id: 'nuit_excentrique', title: "La Nuit excentrique", category: "Rétrospectives", subCategory: "Nuit Nanar",
         imageUrl: "assets/images/program/nuit_excentrique.png",
         description: "Trois longs métrages truffés de faux raccords...",
         director: "Cinémathèque", countryEmoji: "🌙",
-        startTime: _makeDate(27, 23, 59), durationMinutes: 360, location: "Star St-Exupéry - Grande Salle"),
+        startTime: _makeDate(27, 23, 59), durationMinutes: 360, location: "Star St-Exupéry"),
 
+    // evenements
     ProgramItem(
         id: '16', title: "Les Étranges Couleurs De VRANCKX", category: "Événements",
         imageUrl: "assets/images/program/VRANCKX.png",
@@ -137,7 +121,7 @@ class DataRepository {
     ProgramItem(
         id: '17', title: "SoFilm de Genre : lecture", category: "Événements",
         imageUrl: "assets/images/program/SoFilm-de-Genre.png",
-        description: "Le magazine Sofilm organise des résidences de création...",
+        description: "Le magazine Sofilm organise des résidences...",
         director: "Atelier", countryEmoji: "🇫🇷",
         startTime: _makeDate(29, 14, 30), durationMinutes: 225, location: "Cinéma Vox"),
 
@@ -145,14 +129,14 @@ class DataRepository {
     ProgramItem(
         id: '1', title: "Good Boy", category: "Palmarès", subCategory: "Longs métrages",
         imageUrl: "assets/images/program/FANTASTIQUE-GOOD-BOY.png",
-        description: "Indy, le fidèle retriever de Todd, accompagne ce dernier...",
+        description: "Indy, le fidèle retriever de Todd...",
         director: "Ben Leonberg", countryEmoji: "🇺🇸",
         startTime: _makeDate(26, 18, 00), durationMinutes: 90, location: "UGC Ciné Cité - Salle 4"),
 
     ProgramItem(
         id: '2', title: "Bugonia", category: "Longs métrages",
         imageUrl: "assets/images/program/bugonia.png",
-        description: "Deux jeunes hommes obsédés par les théories du complot...",
+        description: "Deux jeunes hommes obsédés par les théories...",
         director: "Yorgos Lanthimos", countryEmoji: "🇬🇧",
         startTime: _makeDate(26, 20, 30), durationMinutes: 110, location: "Star St-Exupéry"),
 
@@ -173,7 +157,7 @@ class DataRepository {
     ProgramItem(
         id: '13', title: "Double or Nothing", category: "Palmarès", subCategory: "Courts métrages",
         imageUrl: "assets/images/program/Double-or-Nothing.png",
-        description: "Un Américain débarque dans le Tokyo des années 1980...",
+        description: "Un Américain débarque dans le Tokyo...",
         director: "Tokay Sirin", countryEmoji: "🇨🇭",
         startTime: _makeDate(27, 11, 00), durationMinutes: 20, location: "Star St-Exupéry"),
 
@@ -194,25 +178,19 @@ class DataRepository {
     ProgramItem(
         id: '18', title: "Sardinia", category: "Courts métrages",
         imageUrl: "assets/images/program/sardinia.png",
-        description: "Dans une société dystopique, l’apparition d’un oiseau...",
+        description: "Dans une société dystopique...",
         director: "Paul Kowalski", countryEmoji: "🇺🇸 🇵🇱",
         startTime: _makeDate(27, 11, 45), durationMinutes: 25, location: "Star St-Exupéry"),
 
     // jurys
     ProgramItem(
         id: '5', title: "Alexandre Aja", category: "Jurys", subCategory: "Films fantastiques",
-        imageUrl: "assets/images/program/jurys/alexAja.png",
-        description: "Président du Jury.",
-        director: "Président", countryEmoji: "🇫🇷",
+        imageUrl: "assets/images/program/jurys/alexAja.png", description: "Président du Jury.", director: "Président", countryEmoji: "🇫🇷",
         startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
-
     ProgramItem(
         id: '6', title: "Judith Berlanda-Beauvallet", category: "Jurys", subCategory: "Films fantastiques",
-        imageUrl: "assets/images/program/jurys/JudithB-B.png",
-        description: "Créatrice de la chaîne Demoiselles d’Horreur.",
-        director: "Jury", countryEmoji: "🇫🇷",
+        imageUrl: "assets/images/program/jurys/JudithB-B.png", description: "Créatrice.", director: "Jury", countryEmoji: "🇫🇷",
         startTime: _makeDate(26, 19, 00), durationMinutes: 60, location: "Village Fantastique"),
-
     ProgramItem(
         id: '7', title: "Jean-Yves Roubin", category: "Jurys", subCategory: "Films fantastiques",
         imageUrl: "assets/images/program/jurys/JYR.png", description: "Producteur.", director: "Jury", countryEmoji: "🇧🇪",
@@ -287,12 +265,11 @@ class _ProgramPageState extends State<ProgramPage> {
 
         if (isAdding) {
           final currentFavorites = DataRepository.allItems.where((i) => i.isFavorite).toList();
-
           for (var fav in currentFavorites) {
             if (itemToToggle.startTime.isBefore(fav.endTime) &&
                 itemToToggle.endTime.isAfter(fav.startTime)) {
-
               _showConflictWarning(fav.title, itemToToggle.title, applyChange);
+              return;
             }
           }
         }
@@ -485,6 +462,7 @@ class _ProgramPageState extends State<ProgramPage> {
                 },
               ),
             ),
+
           filteredList.isEmpty
               ? SizedBox(
             height: 300,
@@ -621,20 +599,21 @@ class _ProgramCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateString = DateFormat('EEE HH:mm', 'fr_FR').format(item.startTime);
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => _DetailPage(item: item)));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))
-            ]
-        ),
-        child: ClipRRect(
+    return Container(
+      decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))
+          ]
+      ),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => _DetailPage(item: item)));
+          },
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -710,13 +689,16 @@ class _ProgramCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: onFavoriteChanged,
-                      child: Icon(
+                    IconButton(
+                      icon: Icon(
                         item.isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: item.isFavorite ? Colors.red : Colors.white70,
                         size: 22,
                       ),
+                      onPressed: onFavoriteChanged,
+                      tooltip: item.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris",
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
                   ],
                 ),

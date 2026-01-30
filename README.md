@@ -56,19 +56,9 @@ flutter run
 
 ---
 
-## Ressources Flutter
-
-Si vous débutez avec Flutter, voici quelques ressources utiles :
-
-* [Lab : Créer votre première application Flutter](https://docs.flutter.dev/get-started/codelab)
-* [Cookbook : Exemples Flutter utiles](https://docs.flutter.dev/cookbook)
-* [Documentation officielle Flutter](https://docs.flutter.dev/)
-
----
-
 ## Statut du projet
 
 Projet académique / démonstratif
-Application fictive – achat de pass non réel
+Application fictive 
 
 ---
